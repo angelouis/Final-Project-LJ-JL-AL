@@ -1,0 +1,20 @@
+type TShirt {
+    tShirtId: ID!
+    size: String!
+    color: String!
+    description: String!
+    price: Float!
+    quantity: Int!
+}
+
+type Query {
+    findByColor(color:String!): [TShirt]
+    findBySize(size: String!):[TShirt]
+    findTShirt(id: Int!): TShirt
+}
+
+type Mutation {
+    addTShirt(tShirtId: ID!, size: String!, color: String!, description: String!, price: Float!, quantity: Int!): TShirt
+    updateTShirt(tShirtId: ID!, size: String!, color: String!, description: String!, price: Float!, quantity: Int!) : TShirt
+    deleteTShirtById(tShirtId: ID!): Boolean
+}
