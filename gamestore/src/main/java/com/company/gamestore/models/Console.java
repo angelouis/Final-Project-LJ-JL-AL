@@ -3,6 +3,9 @@ package com.company.gamestore.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -17,16 +20,20 @@ public class Console implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotEmpty(message = "You must supply a value for model.")
     private String model;
 
+    @NotEmpty(message = "You must supply a value for model.")
     private String manufacturer;
 
     private String memory_amount;
 
     private String processor;
 
+    @NotNull(message = "You must supply a value for price.")
     private BigDecimal price;
 
+    @Min(value = 0, message = "Quantity must be greater than 0")
     private int quantity;
 
     public Console() {
