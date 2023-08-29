@@ -285,4 +285,20 @@ class ConsoleControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void shouldReturn404StatusCodeIfManufacturerNotFound() throws Exception {
+
+        when(serviceLayer.findConsolesByManufacturer("Microsoft"))
+                .thenReturn(null);
+
+
+        mockMvc.perform(get("/consoles/manufacturer/Microsoft"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+
+
+
+
 }

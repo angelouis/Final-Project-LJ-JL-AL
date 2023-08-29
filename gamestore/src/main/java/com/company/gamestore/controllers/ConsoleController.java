@@ -53,19 +53,13 @@ public class ConsoleController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteConsole(@PathVariable int id) {
         serviceLayer.removeConsole(id);
-//        try {
-//            serviceLayer.removeConsole(id);
-//        }
-//        catch (NotFoundException e){
-//            e.printStackTrace();
-//        }
+
     }
 
     //Get Console By Manufacturer
     @GetMapping("/consoles/manufacturer/{manufacturer}")
     @ResponseStatus(HttpStatus.OK)
     public List<Console> getConsolesByManufacturer(@PathVariable String manufacturer) throws NotFoundException {
-       // return serviceLayer.findConsolesByManufacturer(manufacturer);
         return Optional
                 .ofNullable(serviceLayer.findConsolesByManufacturer(manufacturer))
                 .orElseThrow(() -> new NotFoundException("Requested console was not found! [ manufacturer = " + manufacturer + "]"));

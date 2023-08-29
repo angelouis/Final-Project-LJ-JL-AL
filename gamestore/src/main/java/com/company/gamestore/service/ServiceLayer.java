@@ -26,17 +26,15 @@ public class ServiceLayer {
 
     }
 
-
     public Console findConsole(int id) {
        Optional<Console> console = consoleRepository.findById(id);
 
-        if(!console.isPresent()) {
+        if(console.isPresent()) {
             return console.get();
         }
         else{
             return null;
         }
-
 
     }
 
