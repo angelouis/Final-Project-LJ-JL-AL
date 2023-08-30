@@ -3,6 +3,7 @@ package com.company.gamestore.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -16,17 +17,26 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotEmpty(message = "Game title cant be empty")
+    @Size(max = 50, message = "Game title cant be over 50 characters")
     private String title;
-
+    @NotEmpty(message = "Game esrbrating cant be empty")
+    @Size(max =50, message = "Game esrbrating cant be over 50 characters")
     private String esrbRating;
-
+    @NotEmpty(message = "Game description cant be empty")
+    @Size(max = 255, message = "Game description cant be over 50 characters")
     private String description;
 
+    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = "Decimal cant be empty")
+    @Digits(integer=5, fraction=2)
     private BigDecimal price;
-
+    @NotEmpty(message = "Game studio cant be empty")
+    @Size(max =50, message = "Game studio cant be over 50 characters")
     private String studio;
 
-    private Integer quantity;
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private int quantity;
 
     public Integer getId() {
         return id;

@@ -47,7 +47,7 @@ public class GameRepositoryTest {
         assertEquals(gameList.size(),1);
     }
     @Test
-    public void shouldAddGame(){
+    public void shouldCreateGame(){
 
         game = new Game();
 

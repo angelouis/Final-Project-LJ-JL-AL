@@ -1,9 +1,7 @@
 package com.company.gamestore.contollers;
 
 import com.company.gamestore.models.Game;
-import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.service.ServiceLayer;
-import com.company.gamestore.viewmodels.GameViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +18,18 @@ public class GameController implements Serializable {
 
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.CREATED)
-    public GameViewModel addGame(@RequestBody GameViewModel gameViewModel){
-        return serviceLayer.saveGame(gameViewModel);
+    public Game addGame(@RequestBody Game game){
+        return serviceLayer.saveGame(game);
     }
 
     @PutMapping("/games")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateGame(@RequestBody GameViewModel gameViewModel){
-        serviceLayer.updateGame(gameViewModel);
+    public void updateGame(@RequestBody Game game){
+        serviceLayer.updateGame(game);
     }
 
     @GetMapping("/games/{id}")
-    public GameViewModel getGameById(@PathVariable int id){
+    public Game getGameById(@PathVariable int id){
       return serviceLayer.findGame(id);
     }
 
@@ -54,7 +52,7 @@ public class GameController implements Serializable {
     }
     
     @GetMapping("/games")
-    public List<GameViewModel> getAllGames(){return serviceLayer.findAllGames();}
+    public List<Game> getAllGames(){return serviceLayer.findAllGames();}
 
     @DeleteMapping("/games/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
