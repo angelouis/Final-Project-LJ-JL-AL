@@ -1,5 +1,6 @@
 package com.company.gamestore.controllers;
 
+import com.company.gamestore.exceptions.NotFoundException;
 import com.company.gamestore.services.ServiceLayer;
 import com.company.gamestore.viewmodels.TShirtViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class TShirtController {
@@ -71,6 +73,9 @@ public class TShirtController {
     @GetMapping("/tshirts/byColor/{color}")
     public List<TShirtViewModel> getTShirtsByColor(@PathVariable String color) {
         return serviceLayer.findTShirtByColor(color);
+//        return Optional
+//                .ofNullable(serviceLayer.findTShirtByColor(color))
+//                .orElseThrow(() -> new NotFoundException("Requested t-shirt was not found! [ color = " + color + "]"));
     }
 
     /**

@@ -10,15 +10,17 @@ import java.util.List;
 public interface TShirtRepository extends JpaRepository<TShirt, Integer> {
     /**
      * Provides a list of t-shirts that is for a specific color
+     *
      * @param color - needs the color input
      * @return Returns a list of t-shirts in the color
      */
-    public List<TShirt> findByColor(String color);
+    List<TShirt> findByColor(String color);
 
     /**
      * Provides a list of t-shirts that is for a specific size
+     *
      * @param size - needs the size input
      * @return Returns a list of t-shirts in the size
      */
-    public List<TShirt> findBySize(String size);
+    List<TShirt> findBySize(String size);
 }

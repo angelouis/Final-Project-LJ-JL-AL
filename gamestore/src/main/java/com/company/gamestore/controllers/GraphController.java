@@ -19,6 +19,7 @@ public class GraphController implements Serializable {
 
     /**
      * find t-shirt by id in the t-shirt repository
+     *
      * @param id - uses the t-shirt id as input
      * @return Returns the t-shirt or null by finding the t-shirt in the t-shirt repository using the id
      */
@@ -29,6 +30,7 @@ public class GraphController implements Serializable {
 
     /**
      * find t-shirt by color in the t-shirt repository
+     *
      * @param color - uses the t-shirt color as input
      * @return Returns the t-shirt in a list by finding the t-shirt in the t-shirt repository using the color
      */
@@ -39,6 +41,7 @@ public class GraphController implements Serializable {
 
     /**
      * find t-shirt by size in the t-shirt repository
+     *
      * @param size - uses the t-shirt size as input
      * @return Returns the t-shirt in a list by finding the t-shirt in the t-shirt repository using the size
      */
@@ -49,6 +52,7 @@ public class GraphController implements Serializable {
 
     /**
      * Uses the parameters as factors to create the new t-shirt
+     *
      * @param size
      * @param color
      * @param description
@@ -57,7 +61,7 @@ public class GraphController implements Serializable {
      * @return Returns the saved the new t-shirt in the tshirtrepository
      */
     @MutationMapping
-    public TShirt addTShirt (
+    public TShirt addTShirt(
             @Argument String size,
             @Argument String color,
             @Argument String description,
@@ -75,6 +79,7 @@ public class GraphController implements Serializable {
 
     /**
      * places in the parameters first, checks whether the t-shirt exists in the repo by the id, and then updates it
+     *
      * @param id
      * @param size
      * @param color

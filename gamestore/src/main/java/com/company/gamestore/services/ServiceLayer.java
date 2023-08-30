@@ -1,5 +1,8 @@
 package com.company.gamestore.services;
 
+import com.company.gamestore.exceptions.NotFoundException;
+import com.company.gamestore.exceptions.TShirtUpdateException;
+import com.company.gamestore.exceptions.TShirtViewModelBuildingException;
 import com.company.gamestore.models.TShirt;
 import com.company.gamestore.repositories.TShirtRepository;
 import com.company.gamestore.viewmodels.TShirtViewModel;
@@ -13,10 +16,10 @@ import java.util.Optional;
 
 @Component
 public class ServiceLayer {
-    private TShirtRepository tShirtRepository;
+    private final TShirtRepository tShirtRepository;
 
     @Autowired
-    public ServiceLayer (TShirtRepository tShirtRepository) {
+    public ServiceLayer(TShirtRepository tShirtRepository) {
         this.tShirtRepository = tShirtRepository;
     }
 
@@ -26,7 +29,11 @@ public class ServiceLayer {
      * @return returns the t-shirt that was saved
      */
     @Transactional
-    public TShirtViewModel saveTShirt(TShirtViewModel viewModel) {
+    public TShirtViewModel saveTShirt(TShirtViewModel viewModel) throws NotFoundException {
+        if (viewModel == null) {
+            throw new NotFoundException("Failed to save T-Shirt");
+        }
+
         TShirt tShirt = new TShirt();
         tShirt.setQuantity(viewModel.getQuantity());
         tShirt.setSize(viewModel.getSize());
@@ -34,47 +41,66 @@ public class ServiceLayer {
         tShirt.setColor(viewModel.getColor());
         tShirt.setPrice(viewModel.getPrice());
         tShirt = tShirtRepository.save(tShirt);
+
         viewModel.settShirtId(tShirt.gettShirtId());
         return viewModel;
     }
 
     /**
      * Finds the t-shirt within the t-shirt repo
+     *
      * @param id - uses the id to find the t-shirt
      * @return Returns the t-shirt as a t-shirt viewmodel if it is present or else it gives null
      */
+    @Transactional
     public TShirtViewModel findTShirt(int id) {
         Optional<TShirt> tShirt = tShirtRepository.findById(id);
-        return tShirt.isPresent() ? buildTShirtViewModel(tShirt.get()) : null;
+
+        if (tShirt == null || tShirt.isEmpty() || !tShirt.isPresent()) {
+            throw new NotFoundException("T-shirt with ID " + id + " not found");
+        }
+
+        return buildTShirtViewModel(tShirt.get());
     }
 
     /**
      * Builds the t-shirt viewModel with the specific instances variables
+     *
      * @param tShirt uses the t-shirt as a way to create a viewmodel
      * @return returns the filled out t-shirt viewmodel
      */
-    private TShirtViewModel buildTShirtViewModel(TShirt tShirt) {
-        TShirtViewModel tvm = new TShirtViewModel();
-        tvm.setColor(tShirt.getColor());
-        tvm.setDescription(tShirt.getDescription());
-        tvm.setPrice(tShirt.getPrice());
-        tvm.setQuantity(tShirt.getQuantity());
-        tvm.setSize(tShirt.getSize());
+    public TShirtViewModel buildTShirtViewModel(TShirt tShirt) {
+        try {
+            TShirtViewModel tvm = new TShirtViewModel();
+            tvm.settShirtId(tShirt.gettShirtId());
+            tvm.setColor(tShirt.getColor());
+            tvm.setDescription(tShirt.getDescription());
+            tvm.setPrice(tShirt.getPrice());
+            tvm.setQuantity(tShirt.getQuantity());
+            tvm.setSize(tShirt.getSize());
 
-        return tvm;
+            return tvm;
+        } catch (Exception e) {
+            throw new TShirtViewModelBuildingException("Error Building TShirtViewModel");
+        }
     }
 
     /**
      * Get all the t-shirt from the repo and then converts the t-shirts to viewmodel t-shirts
+     *
      * @return Returns the list of viewmodel t-shirts
      */
-    public List<TShirtViewModel> findAllTShirt() {
+    @Transactional
+    public List<TShirtViewModel> findAllTShirt() throws TShirtViewModelBuildingException {
         List<TShirt> tShirtList = tShirtRepository.findAll();
         List<TShirtViewModel> tvmList = new ArrayList<>();
-
-        for (TShirt tShirt : tShirtList) {
-            TShirtViewModel tvm = buildTShirtViewModel(tShirt);
-            tvmList.add(tvm);
+        try {
+            for (TShirt tShirt : tShirtList) {
+                TShirtViewModel tvm = buildTShirtViewModel(tShirt);
+                tvmList.add(tvm);
+            }
+        } catch (Exception e) {
+            throw new TShirtViewModelBuildingException("Error building T-ShirtViewModel");
         }
 
         return tvmList;
@@ -86,23 +112,37 @@ public class ServiceLayer {
      */
     @Transactional
     public void updateTShirt(TShirtViewModel viewModel) {
-        TShirt tShirt = new TShirt();
-        tShirt.settShirtId(viewModel.gettShirtId());
-        tShirt.setPrice(viewModel.getPrice());
-        tShirt.setColor(viewModel.getColor());
-        tShirt.setDescription(viewModel.getDescription());
-        tShirt.setQuantity(viewModel.getQuantity());
 
-        tShirtRepository.save(tShirt);
+        //if viewmodel is inside of the repo
+        //do optional tshirt = tshirtrepo.findbyid
+        // save the tshirt
+        // else throw error
+        try {
+            TShirt tShirt = new TShirt();
+            tShirt.settShirtId(viewModel.gettShirtId());
+            tShirt.setPrice(viewModel.getPrice());
+            tShirt.setColor(viewModel.getColor());
+            tShirt.setDescription(viewModel.getDescription());
+            tShirt.setQuantity(viewModel.getQuantity());
+            tShirt.setSize(viewModel.getSize());
+
+            tShirtRepository.save(tShirt);
+        } catch (Exception e) {
+            throw new TShirtUpdateException("Error Updating T-Shirt");
+        }
     }
 
     /**
      * Removes the t-shirt from the repository by id
      * @param id - Uses the id to delete the t-shirt from the repo
      */
-    @Transactional
+//    @Transactional
     public void removeTShirt(int id) {
+        tShirtRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException());
+
         tShirtRepository.deleteById(id);
+
     }
 
     /**
@@ -116,9 +156,13 @@ public class ServiceLayer {
 
         List<TShirtViewModel> tvmList = new ArrayList<>();
 
-        for (TShirt tShirt : tShirtList) {
-            TShirtViewModel tvm = buildTShirtViewModel(tShirt);
-            tvmList.add(tvm);
+        try {
+            for (TShirt tShirt : tShirtList) {
+                TShirtViewModel tvm = buildTShirtViewModel(tShirt);
+                tvmList.add(tvm);
+            }
+        } catch (Exception e) {
+            throw new TShirtViewModelBuildingException("Error building TShirt");
         }
 
         return tvmList;
@@ -135,9 +179,13 @@ public class ServiceLayer {
 
         List<TShirtViewModel> tvmList = new ArrayList<>();
 
-        for (TShirt tShirt : tShirtList) {
-            TShirtViewModel tvm = buildTShirtViewModel(tShirt);
-            tvmList.add(tvm);
+        try {
+            for (TShirt tShirt : tShirtList) {
+                TShirtViewModel tvm = buildTShirtViewModel(tShirt);
+                tvmList.add(tvm);
+            }
+        } catch (Exception e) {
+            throw new TShirtViewModelBuildingException("Error building TShirt");
         }
 
         return tvmList;
