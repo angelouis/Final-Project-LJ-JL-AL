@@ -63,7 +63,7 @@ public class ServiceLayer {
                          invoice.setUnitPrice(game.getPrice());
                          invoiceViewModel.setUnitPrice(game.getPrice());
                      }else{
-                         throw new IllegalArgumentException("The quantity that is required that is more than is there");
+                         throw new IllegalArgumentException("The quantity that is required there is more than is available of that item");
                      }
 
                  }else {
@@ -119,7 +119,12 @@ public class ServiceLayer {
         invoice.setStreet(invoiceViewModel.getStreet());
         invoice.setState(invoiceViewModel.getState());
         invoice = invoiceRepository.save(invoice);
-        invoiceViewModel.setId(invoice.getId());
+       // Optional <Invoice> test = invoiceRepository.findByName(invoiceViewModel.getName());
+
+        invoiceViewModel = buildInvoiceViewModel(invoice);
+
+        //invoiceViewModel.setId(invoice.getId());
+
 
         return invoiceViewModel;
     }
@@ -138,6 +143,8 @@ public class ServiceLayer {
         invoiceViewModel.setTax(invoice.getTax());
         invoiceViewModel.setProcessingFee(invoice.getProcessingFee());
         invoiceViewModel.setTotal(invoice.getTotal());
+        invoiceViewModel.setId(invoice.getId());
+        invoiceViewModel.setState(invoice.getState());
 
         return invoiceViewModel;
     }
@@ -156,11 +163,14 @@ public class ServiceLayer {
     public List<InvoiceViewModel> findAllInvoice(){
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
+        if (invoiceList == null) {return null;}
 
         List<InvoiceViewModel> invoiceViewModelList = new ArrayList<>();
 
         for(Invoice invoice:invoiceList){
+
             InvoiceViewModel  invoiceViewModel = buildInvoiceViewModel(invoice);
+            invoiceViewModelList.add(invoiceViewModel);
         }
         return invoiceViewModelList;
     }
@@ -197,7 +207,12 @@ public class ServiceLayer {
     }
 
     public List<Game> findAllGames(){
-       return gameRepository.findAll();
+        List<Game> gameList =  gameRepository.findAll();
+        if(gameList == null){
+            throw new NotFoundException("Game list has a null value");
+        }else{
+            return gameList;
+        }
     }
 
 

@@ -167,4 +167,24 @@ public class Invoice {
     public int hashCode() {
         return Objects.hash(id, name, street, city, state, zipCode, itemType, itemId, unitPrice, quantity, subTotal, tax, processingFee, total);
     }
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", itemType='" + itemType + '\'' +
+                ", itemId=" + itemId +
+                ", unitPrice=" + unitPrice +
+                ", quantity=" + quantity +
+                ", subTotal=" + subTotal +
+                ", tax=" + tax +
+                ", processingFee=" + processingFee +
+                ", total=" + total +
+                '}';
+    }
 }
