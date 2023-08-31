@@ -29,13 +29,16 @@ public class ServiceLayer {
 
     private TShirtRepository tShirtRepository;
 
+    private ConsoleRepository consoleRepository;
+
     @Autowired
-    public ServiceLayer(GameRepository gameRepository, InvoiceRepository invoiceRepository, TaxRepository taxRepository, FeeRepository feeRepository, TShirtRepository tShirtRepository) {
+    public ServiceLayer(GameRepository gameRepository, InvoiceRepository invoiceRepository, TaxRepository taxRepository, FeeRepository feeRepository, TShirtRepository tShirtRepository,ConsoleRepository consoleRepository) {
         this.gameRepository = gameRepository;
         this.invoiceRepository = invoiceRepository;
         this.taxRepository = taxRepository;
         this.feeRepository = feeRepository;
         this.tShirtRepository = tShirtRepository;
+        this.consoleRepository = consoleRepository;
     }
     //Invoice API
     @Transactional
@@ -48,10 +51,10 @@ public class ServiceLayer {
         BigDecimal additionalProcessing = new BigDecimal("15.99");
         BigDecimal totalAmount = new BigDecimal("0");
         BigDecimal maxTotal = new BigDecimal("999999.99");
-
+        Game game = new Game();
         if("game".equalsIgnoreCase(invoiceViewModel.getItemType())){
             invoice.setItemType(invoiceViewModel.getItemType());
-            Game game = findGame(invoiceViewModel.getItemId());
+            game = findGame(invoiceViewModel.getItemId());
              if(invoiceViewModel.getItemId().equals(game.getId())){
                  invoice.setItemId(invoiceViewModel.getItemId());
                  if(game.getQuantity() > 0){
@@ -73,11 +76,30 @@ public class ServiceLayer {
                  throw new IllegalArgumentException("Item id was not found");
              }
         }
-        else if( invoiceViewModel.getItemType().equals("console") || invoiceViewModel.getItemType().equals("Console")) {
-
-
+        else if("console".equalsIgnoreCase(invoiceViewModel.getItemType())){
+            invoice.setItemType(invoiceViewModel.getItemType());
+            Console console = findConsole(invoiceViewModel.getItemId());
+            if(invoiceViewModel.getItemId().equals(console.getId())){
+                invoice.setItemId(invoiceViewModel.getItemId());
+                if(console.getQuantity() > 0){
+                    if(console.getQuantity() - invoiceViewModel.getQuantity() > 0){
+                        console.setQuantity(console.getQuantity() - invoiceViewModel.getQuantity());
+                        saveConsole(console);
+                        invoice.setQuantity(invoiceViewModel.getQuantity());
+                        subtotal = console.getPrice().multiply(new BigDecimal(invoiceViewModel.getQuantity()));
+                        invoice.setUnitPrice(console.getPrice());
+                        invoiceViewModel.setUnitPrice(console.getPrice());
+                    }else{
+                        throw new IllegalArgumentException("The quantity that is required there is more than is available of that item");
+                    }
+                }else {
+                    throw new IllegalArgumentException("Item quantity is less than 0");
+                }
+            }else{
+                throw new IllegalArgumentException("Item id was not found");
+            }
         }
-        else if(invoiceViewModel.getItemType().equals("tshirt") || invoiceViewModel.getItemType().equals("Tshirt")) {
+        else if("tshirt".equalsIgnoreCase(invoiceViewModel.getItemType())){
             invoice.setItemType(invoiceViewModel.getItemType());
             TShirtViewModel tShirt = findTShirt(invoiceViewModel.getItemId());
             if(invoiceViewModel.getItemId().equals(tShirt.gettShirtId())){
@@ -143,6 +165,7 @@ public class ServiceLayer {
         invoice = invoiceRepository.save(invoice);
        // Optional <Invoice> test = invoiceRepository.findByName(invoiceViewModel.getName());
 
+
         invoiceViewModel = buildInvoiceViewModel(invoice);
 
         //invoiceViewModel.setId(invoice.getId());
@@ -199,6 +222,58 @@ public class ServiceLayer {
     public Optional<InvoiceViewModel> getInvoiceByCustomerName(String name) {
 
         return Optional.of(buildInvoiceViewModel(invoiceRepository.findByName(name).get()));
+    }
+    //CONSOLE API
+    public Console saveConsole (Console console) {
+        return  consoleRepository.save(console);
+
+    }
+
+    public Console findConsole(int id) {
+        Optional<Console> console = consoleRepository.findById(id);
+
+        if(console.isPresent()) {
+            return console.get();
+        }
+        else{
+            return null;
+        }
+
+    }
+
+    public List<Console> findAllConsoles() {
+
+        return consoleRepository.findAll();
+    }
+
+    public List<Console> findConsolesByManufacturer(String manufacturer) {
+
+        // return consoleRepository.findByManufacturer(manufacturer);
+
+        List<Console> console = consoleRepository.findByManufacturer(manufacturer);
+
+        if(!console.isEmpty()) {
+            return console;
+        }
+        else{
+            return null;
+        }
+
+    }
+
+    public void updateConsole(Console console) {
+
+        consoleRepository.save(console);
+    }
+
+    public void removeConsole(int id) {
+
+        consoleRepository.findById(id)
+                .orElseThrow(() -> new com.company.gamestore.exceptions.NotFoundException());
+
+        consoleRepository.deleteById(id);
+
+
     }
     //Tshirt API
     /**

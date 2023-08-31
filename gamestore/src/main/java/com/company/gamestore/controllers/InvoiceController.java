@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public class InvoiceController implements Serializable {
 
     @PostMapping("/invoice")
     @ResponseStatus(HttpStatus.CREATED)
-    public InvoiceViewModel addInvoice(@RequestBody InvoiceViewModel invoiceViewModel){
+    public InvoiceViewModel addInvoice(@RequestBody @Valid InvoiceViewModel invoiceViewModel){
         return serviceLayer.saveInvoice(invoiceViewModel);
     }
 

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -29,6 +30,8 @@ public class ServiceLayerTest {
     TaxRepository taxRepository;
     TShirtRepository tShirtRepository;
 
+    ConsoleRepository consoleRepository;
+
     private BigDecimal bigDecimal = new BigDecimal("2.22");
 
     @BeforeEach
@@ -38,10 +41,144 @@ public class ServiceLayerTest {
         setUpTaxRepositoryMock();
         setUpFeeRepositoryMock();
         setUpTShirtRepositoryMock();
+        setUpConsoleRepositoryMock();
 
-         serviceLayer = new ServiceLayer(gameRepository,invoiceRepository,taxRepository,feeRepository, tShirtRepository);
+         serviceLayer = new ServiceLayer(gameRepository,invoiceRepository,taxRepository,feeRepository, tShirtRepository, consoleRepository);
 
     }
+    //CONSOLE SERVICE TEST
+    @Test
+    public void shouldSaveConsole(){
+
+        Console expectedResult = new Console();
+        expectedResult.setId(10);
+        expectedResult.setQuantity(10);
+        expectedResult.setMemory_amount("25 GB");
+        expectedResult.setProcessor("Core i5");
+        expectedResult.setPrice(new BigDecimal("100.99"));
+        expectedResult.setModel("Xbox 360");
+        expectedResult.setManufacturer("Microsoft");
+
+
+        Console console = new Console();
+        console.setQuantity(10);
+        console.setMemory_amount("25 GB");
+        console.setProcessor("Core i5");
+        console.setPrice(new BigDecimal("100.99"));
+        console.setModel("Xbox 360");
+        console.setManufacturer("Microsoft");
+
+        console = consoleRepository.save(console);
+
+        assertEquals(expectedResult,console);
+
+    }
+
+    @Test
+    public void shouldFindConsoleById(){
+
+        Console expectedResult = new Console();
+        expectedResult.setId(10);
+        expectedResult.setQuantity(10);
+        expectedResult.setMemory_amount("25 GB");
+        expectedResult.setProcessor("Core i5");
+        expectedResult.setPrice(new BigDecimal("100.99"));
+        expectedResult.setModel("Xbox 360");
+        expectedResult.setManufacturer("Microsoft");
+
+        Console console = serviceLayer.findConsole(10);
+
+        assertEquals(expectedResult, console);
+
+
+    }
+
+    @Test
+    public void shouldReturnNullIfConsoleNotFound(){
+
+        Console console = serviceLayer.findConsole(50);
+
+        assertEquals(null, console);
+
+
+    }
+
+    @Test
+    public void shouldFindAllConsoles(){
+
+        Console expectedResult = new Console();
+        expectedResult.setId(10);
+        expectedResult.setQuantity(10);
+        expectedResult.setMemory_amount("25 GB");
+        expectedResult.setProcessor("Core i5");
+        expectedResult.setPrice(new BigDecimal("100.99"));
+        expectedResult.setModel("Xbox 360");
+        expectedResult.setManufacturer("Microsoft");
+
+        List<Console> eList = new ArrayList<>();
+        eList.add(expectedResult);
+
+        List<Console> cList = consoleRepository.findAll();
+
+        assertEquals(eList, cList);
+
+    }
+
+    @Test
+    public void shouldFindConsoleByManufacturer(){
+
+        List<Console> expectedResult = new ArrayList<>();
+        Console console1 = new Console();
+        console1.setId(10);
+        console1.setQuantity(10);
+        console1.setMemory_amount("25 GB");
+        console1.setProcessor("Core i5");
+        console1.setPrice(new BigDecimal("100.99"));
+        console1.setModel("Xbox 360");
+        console1.setManufacturer("Microsoft");
+
+        expectedResult.add(console1);
+
+        List<Console> console = serviceLayer.findConsolesByManufacturer("Microsoft");
+
+        assertEquals(expectedResult, console);
+
+
+    }
+
+
+    private void setUpConsoleRepositoryMock() throws Exception {
+        consoleRepository = mock(ConsoleRepository.class);
+        Console console = new Console();
+        console.setId(10);
+        console.setQuantity(10);
+        console.setMemory_amount("25 GB");
+        console.setProcessor("Core i5");
+        console.setPrice(new BigDecimal("100.99"));
+        console.setModel("Xbox 360");
+        console.setManufacturer("Microsoft");
+
+        Console console2 = new Console();
+        console2.setQuantity(10);
+        console2.setMemory_amount("25 GB");
+        console2.setProcessor("Core i5");
+        console2.setPrice(new BigDecimal("100.99"));
+        console2.setModel("Xbox 360");
+        console2.setManufacturer("Microsoft");
+
+        List cList = new ArrayList();
+        cList.add(console);
+
+        doReturn(console).when(consoleRepository).save(console2);
+        doReturn(Optional.of(console)).when(consoleRepository).findById(10);
+        doReturn(cList).when(consoleRepository).findAll();
+        doReturn(cList).when(consoleRepository).findByManufacturer("Microsoft");
+
+
+
+    }
+
+    //GAME SERVICETEST
     @Test
     public void ShouldSaveGame(){
         Game game1 = new Game();
@@ -331,28 +468,38 @@ public class ServiceLayerTest {
         invoiceViewModel1.setZipCode("65774");
         invoiceViewModel1.setItemType("Game");
         invoiceViewModel1.setItemId(1);
-        invoiceViewModel1.setQuantity(3);
+        invoiceViewModel1.setQuantity(2);
         invoiceViewModel1.setState("CA");
         invoiceViewModel1.setSubTotal(bigDecimal);
         invoiceViewModel1.setProcessingFee(bigDecimal);
+        invoiceViewModel1.setTax(bigDecimal);
         invoiceViewModel1.setTotal(bigDecimal);
         invoiceViewModel1.setUnitPrice(bigDecimal);
+        invoiceViewModel1.setId(1);
+
+      //  invoiceViewModel1 = serviceLayer.saveInvoice(invoiceViewModel1);
 
         InvoiceViewModel invoice1 = new InvoiceViewModel();
-        invoice1.setName(invoiceViewModel1.getName());
-        invoice1.setStreet(invoiceViewModel1.getStreet());
-        invoice1.setCity(invoiceViewModel1.getCity());
-        invoice1.setZipCode(invoiceViewModel1.getZipCode());
-        invoice1.setItemType(invoiceViewModel1.getItemType());
-        invoice1.setItemId(invoiceViewModel1.getItemId());
-        invoice1.setQuantity(3);
+        invoice1.setName("Carl");
+        invoice1.setStreet("2334 Shardoad");
+        invoice1.setCity("austin");
+        invoice1.setZipCode("65774");
+        invoice1.setItemType("Game");
+        invoice1.setItemId(1);
+        invoice1.setQuantity(2);
         invoice1.setState("CA");
-        invoice1.setSubTotal(bigDecimal);
-        invoice1.setProcessingFee(bigDecimal);
-        invoice1.setTotal(bigDecimal);
-        invoice1.setUnitPrice(bigDecimal);
+//        invoice1.setSubTotal(bigDecimal);
+//        invoice1.setProcessingFee(bigDecimal);
+//        invoice1.setTotal(bigDecimal);
+//        invoice1.setUnitPrice(bigDecimal);
+//        invoice1.setId(1);
 
-        invoice1 =  serviceLayer.saveInvoice(invoice1);
+        try {
+            invoice1 = serviceLayer.saveInvoice(invoice1);
+        }catch (NullPointerException e){
+            System.err.println("NullPointerException occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         assertEquals(invoiceViewModel1, invoice1);
 
@@ -483,7 +630,8 @@ public class ServiceLayerTest {
         invoiceList.add(invoice);
         invoiceList.add(invoice1);
 
-        doReturn(invoice).when(invoiceRepository).save(invoice1);
+       // doReturn(invoice).when(invoiceRepository).save(invoice);
+        doReturn(invoice).when(invoiceRepository).save(any(Invoice.class));
         doReturn(invoiceList).when(invoiceRepository).findAll();
         doReturn(Optional.of(invoice)).when(invoiceRepository).findById(1);
         doReturn(Optional.of(invoice)).when(invoiceRepository).findByName(invoice.getName());

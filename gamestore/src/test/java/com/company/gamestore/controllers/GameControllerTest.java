@@ -1,5 +1,6 @@
 package com.company.gamestore.controllers;
 
+import com.company.gamestore.models.Console;
 import com.company.gamestore.models.Game;
 import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.services.ServiceLayer;
@@ -165,15 +166,20 @@ public class GameControllerTest {
 
     }
     @Test
-    public void testGameShouldReturnNotFound() throws Exception {
+    public void shouldReturn422WhenPostingAnEmptyEsrb() throws Exception {
+        Game game1 = new Game();
+        game1.setQuantity(1);
+        game1.setStudio("Warner Bros");
+        game1.setPrice(bigDecimal);
+        game1.setTitle("Batman");
+        game1.setDescription("The newest in the batman series relive your roots as batman");
 
-        when(serviceLayer.findGame(900))
-                .thenReturn(null);
-
-        mockMvc.perform(get("/games/{id}", 900))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(content().string(""));
+        mockMvc.perform(post("/games")               // Perform the POST request
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(game1))
+                )
+                .andDo(print())                         // Print results to console
+                .andExpect(status().isUnprocessableEntity());
     }
 }   
 

@@ -6,6 +6,7 @@ import com.company.gamestore.exceptions.TShirtViewModelBuildingException;
 import com.company.gamestore.models.CustomErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,19 +20,29 @@ import java.util.List;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<List<CustomErrorResponse>> handleArgumentNotValid(MethodArgumentNotValidException e) {
-        List<CustomErrorResponse> errorResponses = new ArrayList<>();
+    public ResponseEntity<List<CustomErrorResponse>> newResponseErrors(MethodArgumentNotValidException e) {
 
-        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-            String fieldName = fieldError.getField();
-            String errorMessage = fieldError.getDefaultMessage();
+        // BindingResult holds the validation errors
+        BindingResult result = e.getBindingResult();
 
-            CustomErrorResponse errorResponse = new CustomErrorResponse(fieldName, errorMessage);
-            errorResponses.add(errorResponse);
+        // Validation errors are stored in FieldError objects
+        List<FieldError> fieldErrors = result.getFieldErrors();
+
+        // Translate the FieldErrors to CustomErrorResponse
+        List<CustomErrorResponse> errorResponseList = new ArrayList<>();
+
+        for (FieldError fieldError : fieldErrors) {
+            CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.toString(), fieldError.getDefaultMessage());
+            errorResponse.setTimestamp(LocalDateTime.now());
+            errorResponse.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
+            errorResponseList.add(errorResponse);
         }
-        return ResponseEntity.unprocessableEntity().body(errorResponses);
+
+        // Create and return the ResponseEntity
+        ResponseEntity<List<CustomErrorResponse>> responseEntity = new ResponseEntity<>(errorResponseList, HttpStatus.UNPROCESSABLE_ENTITY);
+        return responseEntity;
     }
 
     @ExceptionHandler(value = IllegalArgumentException.class)

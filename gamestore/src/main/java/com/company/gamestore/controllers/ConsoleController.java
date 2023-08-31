@@ -2,7 +2,7 @@ package com.company.gamestore.controllers;
 
 import com.company.gamestore.exceptions.NotFoundException;
 import com.company.gamestore.models.Console;
-import com.company.gamestore.service.ServiceLayer;
+import com.company.gamestore.services.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +30,6 @@ public class ConsoleController {
         return Optional
                 .ofNullable(serviceLayer.findConsole(id))
                 .orElseThrow(() -> new NotFoundException("Requested console was not found! [ id = " + id + "]"));
-
-
     }
 
     //Read (All)

@@ -205,6 +205,6 @@ public class TShirtControllerTest {
 
         // Perform the mockMvc request with an invalid color as a path variable
         mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/byColor/{color}",tShirt.getColor()))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isUnprocessableEntity());
    }
 }

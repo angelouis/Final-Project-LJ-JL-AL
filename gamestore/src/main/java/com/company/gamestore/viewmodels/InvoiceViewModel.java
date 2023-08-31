@@ -41,7 +41,7 @@ public class InvoiceViewModel {
     @Digits(integer=8, fraction=2)
     private BigDecimal unitPrice;
 
-    @NotEmpty(message = "Quantity cant be empty")
+    @NotNull(message = "Quantity cant be empty")
     private Integer quantity;
 
     @DecimalMin(value = "0.0", inclusive = false)

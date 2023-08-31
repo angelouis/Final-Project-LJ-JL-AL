@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public class GameController implements Serializable {
 
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.CREATED)
-    public Game addGame(@RequestBody Game game){
+    public Game addGame(@RequestBody @Valid Game game){
         return serviceLayer.saveGame(game);
     }
 
