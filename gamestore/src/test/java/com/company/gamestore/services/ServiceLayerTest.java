@@ -1,14 +1,9 @@
-package com.company.gamestore.service;
+package com.company.gamestore.services;
 
-import com.company.gamestore.models.Fee;
-import com.company.gamestore.models.Game;
-import com.company.gamestore.models.Invoice;
-import com.company.gamestore.models.Tax;
-import com.company.gamestore.repositories.FeeRepository;
-import com.company.gamestore.repositories.GameRepository;
-import com.company.gamestore.repositories.InvoiceRepository;
-import com.company.gamestore.repositories.TaxRepository;
+import com.company.gamestore.models.*;
+import com.company.gamestore.repositories.*;
 import com.company.gamestore.viewmodels.InvoiceViewModel;
+import com.company.gamestore.viewmodels.TShirtViewModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.doubleThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 public class ServiceLayerTest {
 
-    ServiceLayer service;
+    ServiceLayer serviceLayer;
 
     GameRepository gameRepository;
 
@@ -33,6 +27,7 @@ public class ServiceLayerTest {
     FeeRepository feeRepository;
 
     TaxRepository taxRepository;
+    TShirtRepository tShirtRepository;
 
     private BigDecimal bigDecimal = new BigDecimal("2.22");
 
@@ -42,7 +37,9 @@ public class ServiceLayerTest {
         setUpInvoiceRepositoryMock();
         setUpTaxRepositoryMock();
         setUpFeeRepositoryMock();
-        service = new ServiceLayer(gameRepository,invoiceRepository,taxRepository,feeRepository);
+        setUpTShirtRepositoryMock();
+
+         serviceLayer = new ServiceLayer(gameRepository,invoiceRepository,taxRepository,feeRepository, tShirtRepository);
 
     }
     @Test
@@ -91,7 +88,7 @@ public class ServiceLayerTest {
         game2.setTitle("Baan");
         game2.setDescription("The newest in the batman series relive your roots as batman");
 
-        List<Game> gameList = service.findAllGames();
+        List<Game> gameList =  serviceLayer.findAllGames();
 
         assertEquals(2, gameList.size());
 
@@ -108,7 +105,7 @@ public class ServiceLayerTest {
         game1.setTitle("Batman");
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
-        Game game = service.findGame(game1.getId());
+        Game game =  serviceLayer.findGame(game1.getId());
 
         assertEquals(game1, game);
 
@@ -126,7 +123,7 @@ public class ServiceLayerTest {
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
 
-        Optional<Game> game = service.getGameByStudio(game1.getStudio());
+        Optional<Game> game =  serviceLayer.getGameByStudio(game1.getStudio());
 
 
         assertEquals(game1,game.get());
@@ -144,7 +141,7 @@ public class ServiceLayerTest {
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
 
-        Optional<Game> game = service.getGameByEsrbRating(game1.getEsrbRating());
+        Optional<Game> game =  serviceLayer.getGameByEsrbRating(game1.getEsrbRating());
 
 
         assertEquals(game1,game.get());
@@ -162,11 +159,155 @@ public class ServiceLayerTest {
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
 
-        Optional<Game> game = service.getGameByTitle(game1.getTitle());
+        Optional<Game> game =  serviceLayer.getGameByTitle(game1.getTitle());
 
 
         assertEquals(game1,game.get());
 
+    }
+    //Tax
+    private void setUpTShirtRepositoryMock() throws Exception {
+        tShirtRepository = mock(TShirtRepository.class);
+        TShirt tShirt = new TShirt();
+        tShirt.settShirtId(1);
+        tShirt.setPrice(new BigDecimal("10.99"));
+        tShirt.setColor("Yellow");
+        tShirt.setSize("Medium");
+        tShirt.setDescription("Sunshine sun");
+        tShirt.setQuantity(12);
+
+        TShirt tShirt1 = new TShirt();
+        tShirt1.setPrice(new BigDecimal("10.99"));
+        tShirt1.setColor("Yellow");
+        tShirt1.setSize("Medium");
+        tShirt1.setDescription("Sunshine sun");
+        tShirt1.setQuantity(12);
+
+        List tShirtList = new ArrayList();
+        tShirtList.add(tShirt);
+        tShirtList.add(tShirt1);
+
+        doReturn(tShirt).when(tShirtRepository).save(tShirt1);
+        doReturn(Optional.of(tShirt)).when(tShirtRepository).findById(1);
+        doReturn(tShirtList).when(tShirtRepository).findAll();
+        doReturn(tShirtList).when(tShirtRepository).findByColor("Yellow");
+        doReturn(tShirtList).when(tShirtRepository).findBySize("Medium");
+    }
+
+    @Test
+    public void shouldSaveTShirt() {
+        // Perform the  serviceLayer call
+        TShirtViewModel expectedResult = new TShirtViewModel();
+        expectedResult.settShirtId(1);
+        expectedResult.setSize("Medium");
+        expectedResult.setDescription("Sunshine sun");
+        expectedResult.setColor("Yellow");
+        expectedResult.setPrice(new BigDecimal("10.99"));
+        expectedResult.setQuantity(12);
+
+//      // expectedResult = tShirtRepository.save(expectedResult);
+        TShirtViewModel tShirt1 = new TShirtViewModel();
+        tShirt1.setSize("Medium");
+        tShirt1.setDescription("Sunshine sun");
+        tShirt1.setColor("Yellow");
+        tShirt1.setPrice(new BigDecimal("10.99"));
+        tShirt1.setQuantity(12);
+
+        tShirt1 = serviceLayer.saveTShirt(tShirt1);
+
+        assertEquals(expectedResult, tShirt1);
+    }
+
+    @Test
+    public void shouldFindTShirt() {
+        TShirtViewModel expectedResult = new TShirtViewModel();
+        expectedResult.settShirtId(1);
+        expectedResult.setSize("Medium");
+        expectedResult.setDescription("Sunshine sun");
+        expectedResult.setColor("Yellow");
+        expectedResult.setPrice(new BigDecimal("10.99"));
+        expectedResult.setQuantity(12);
+
+        TShirtViewModel tShirtViewModel = serviceLayer.findTShirt(1);
+        assertEquals(tShirtViewModel, expectedResult);
+    }
+
+    @Test
+    public void shouldFindTShirtByColor() {
+        TShirtViewModel expectedResult = new TShirtViewModel();
+        expectedResult.settShirtId(1);
+        expectedResult.setSize("Medium");
+        expectedResult.setDescription("Sunshine sun");
+        expectedResult.setColor("Yellow");
+        expectedResult.setPrice(new BigDecimal("10.99"));
+        expectedResult.setQuantity(12);
+
+        serviceLayer.saveTShirt(expectedResult);
+
+        TShirtViewModel expectedResult1 = new TShirtViewModel();
+        expectedResult1.settShirtId(2);
+        expectedResult1.setSize("Medium");
+        expectedResult1.setDescription("Sunshine sun");
+        expectedResult1.setColor("Yellow");
+        expectedResult1.setPrice(new BigDecimal("10.99"));
+        expectedResult1.setQuantity(12);
+
+        serviceLayer.saveTShirt(expectedResult1);
+
+        List<TShirtViewModel> tShirtViewModel = serviceLayer.findTShirtByColor("Yellow");
+        assertEquals(2, tShirtViewModel.size());
+    }
+
+    @Test
+    public void shouldFindTShirtBySize() {
+        TShirtViewModel expectedResult = new TShirtViewModel();
+        expectedResult.settShirtId(1);
+        expectedResult.setSize("Medium");
+        expectedResult.setDescription("Sunshine sun");
+        expectedResult.setColor("Yellow");
+        expectedResult.setPrice(new BigDecimal("10.99"));
+        expectedResult.setQuantity(12);
+
+        serviceLayer.saveTShirt(expectedResult);
+
+        TShirtViewModel expectedResult1 = new TShirtViewModel();
+        expectedResult1.settShirtId(2);
+        expectedResult1.setSize("Medium");
+        expectedResult1.setDescription("Sunshine sun");
+        expectedResult1.setColor("Yellow");
+        expectedResult1.setPrice(new BigDecimal("10.99"));
+        expectedResult1.setQuantity(12);
+
+        serviceLayer.saveTShirt(expectedResult1);
+
+        List<TShirtViewModel> tShirtViewModel = serviceLayer.findTShirtBySize("Medium");
+        assertEquals(2, tShirtViewModel.size());
+    }
+
+    @Test
+    public void shouldFindAllTShirts() {
+        TShirtViewModel expectedResult = new TShirtViewModel();
+        expectedResult.settShirtId(1);
+        expectedResult.setSize("Medium");
+        expectedResult.setDescription("Sunshine sun");
+        expectedResult.setColor("Yellow");
+        expectedResult.setPrice(new BigDecimal("10.99"));
+        expectedResult.setQuantity(12);
+
+        serviceLayer.saveTShirt(expectedResult);
+
+        TShirtViewModel expectedResult1 = new TShirtViewModel();
+        expectedResult1.settShirtId(2);
+        expectedResult1.setSize("Medium");
+        expectedResult1.setDescription("Sunshine sun");
+        expectedResult1.setColor("Yellow");
+        expectedResult1.setPrice(new BigDecimal("10.99"));
+        expectedResult1.setQuantity(12);
+
+        serviceLayer.saveTShirt(expectedResult1);
+
+        List<TShirtViewModel> tShirtViewModel = serviceLayer.findAllTShirt();
+        assertEquals(2, tShirtViewModel.size());
     }
     //Invoice Service Tests
     @Test
@@ -211,7 +352,7 @@ public class ServiceLayerTest {
         invoice1.setTotal(bigDecimal);
         invoice1.setUnitPrice(bigDecimal);
 
-        invoice1 = service.saveInvoice(invoice1);
+        invoice1 =  serviceLayer.saveInvoice(invoice1);
 
         assertEquals(invoiceViewModel1, invoice1);
 
@@ -234,7 +375,7 @@ public class ServiceLayerTest {
         invoiceViewModel1.setTax(bigDecimal);
         invoiceViewModel1.setId(1);
 
-        Optional<InvoiceViewModel> invoiceViewModel = service.getInvoiceByCustomerName(invoiceViewModel1.getName());
+        Optional<InvoiceViewModel> invoiceViewModel =  serviceLayer.getInvoiceByCustomerName(invoiceViewModel1.getName());
 
         assertEquals(invoiceViewModel1,invoiceViewModel.get());
     }
@@ -258,7 +399,7 @@ public class ServiceLayerTest {
         invoice1.setTotal(bigDecimal);
         invoice1.setId(1);
 
-        InvoiceViewModel invoice = service.findInvoice(invoice1.getId());
+        InvoiceViewModel invoice =  serviceLayer.findInvoice(invoice1.getId());
 
         assertEquals(invoice, invoice1);
 
@@ -299,7 +440,7 @@ public class ServiceLayerTest {
         invoice2.setTotal(bigDecimal);
         invoice2.setId(2);
 
-        List<InvoiceViewModel> invoiceList = service.findAllInvoice();
+        List<InvoiceViewModel> invoiceList =  serviceLayer.findAllInvoice();
 
         assertEquals(2, invoiceList.size());
 
