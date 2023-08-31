@@ -1,10 +1,10 @@
-package com.company.gamestore.contollers;
+package com.company.gamestore.controllers;
 
 import com.company.gamestore.models.Game;
 import com.company.gamestore.models.Invoice;
 import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.repositories.InvoiceRepository;
-import com.company.gamestore.service.ServiceLayer;
+import com.company.gamestore.services.ServiceLayer;
 import com.company.gamestore.viewmodels.InvoiceViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

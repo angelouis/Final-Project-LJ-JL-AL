@@ -2,6 +2,7 @@ package com.company.gamestore.controllers;
 
 import com.company.gamestore.exceptions.NotFoundException;
 import com.company.gamestore.exceptions.TShirtUpdateException;
+import com.company.gamestore.exceptions.TShirtViewModelBuildingException;
 import com.company.gamestore.services.ServiceLayer;
 import com.company.gamestore.viewmodels.TShirtViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 
@@ -24,8 +26,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -123,6 +124,7 @@ public class TShirtControllerTest {
 //                .content(mapper.writeValueAsString(tShirt))
 //                .contentType(MediaType.APPLICATION_JSON))
 //                .andExpect(status().isNotFound());
+
         try {
             mockMvc.perform(MockMvcRequestBuilders
                     .post("/tshirts")
@@ -135,61 +137,37 @@ public class TShirtControllerTest {
     }
 
     // doesn't work
-//    @Test
-//    public void shouldReturn422WhenAddingTShirtFails() throws Exception {
-//        TShirtViewModel tShirtViewModel = new TShirtViewModel();
-////        tShirtViewModel.setDescription("Hello");
-////        tShirtViewModel.setQuantity(10);
-////        tShirtViewModel.setPrice(new BigDecimal("50.99"));
-////        tShirtViewModel.setColor("Yellow");
-////        tShirtViewModel.setSize(null);
-//
-////        serviceLayer.saveTShirt(tShirtViewModel);
-//        when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenReturn(null);
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .post("/tshirts")
-//                        .content(mapper.writeValueAsString(tShirt))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isUnprocessableEntity());
-//    }
+    @Test
+    public void shouldReturn422WhenAddingTShirtFails() throws Exception {
+        TShirtViewModel tShirtViewModel = new TShirtViewModel();
+//        tShirtViewModel.setDescription("Hello");
+//        tShirtViewModel.setQuantity(10);
+//        tShirtViewModel.setPrice(new BigDecimal("50.99"));
+//        tShirtViewModel.setColor("Yellow");
+//        tShirtViewModel.setSize(null);
 
-    // doesn't work
-//    @Test
-//    public void shouldReturn404Delete() throws Exception {
-//        when(serviceLayer.findTShirt(50).thenThrow(NotFoundException.class);
-//
-//        try {
-//            ResultActions perform = mockMvc.perform(delete("/tshirts/{id}", 1));
-//            fail("Expected NotFoundException to be thrown");
-//        } catch (NestedServletException e) {
-//            assertThat(e.getCause(), instanceOf(NotFoundException.class));
-//        }
-//    }
+//        serviceLayer.saveTShirt(tShirtViewModel);
+        tShirt.setColor(null);
+        when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenReturn(null);
 
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/tshirts")
+                        .content(mapper.writeValueAsString(tShirt))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
+    }
 
-    // Not working
-//    @Test
-//    public void shouldReturn404WhenUpdatingTShirtFails() throws Exception {
-//        when(serviceLayer.updateTShirt(any(TShirtViewModel.class))).thenThrow(TShirtUpdateException.class);
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .put("/tshirts")
-//                        .content(mapper.writeValueAsString(tShirt))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotFound());
-//    }
 
     // giving a 500 error
-//    @Test
-//    public void shouldReturn404WhenRemovingTShirtFails() throws Exception {
-////        doThrow(NotFoundException.class).when(serviceLayer).removeTShirt(anyInt());
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .delete("/tshirts/{id}", 50) // Replace 123 with the actual ID
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isUnprocessableEntity());
-//    }
+    @Test
+    public void shouldReturn404WhenRemovingTShirtFails() throws Exception {
+      // doThrow(NotFoundException.class).when(serviceLayer).removeTShirt(anyInt());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/tshirts/{id}", 50) // Replace 123 with the actual ID
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
+    }
 
     @Test
     public void shouldReturn404WhenTShirtNotFound() throws Exception {
@@ -207,25 +185,26 @@ public class TShirtControllerTest {
     }
 
     // getting a 200 error
-//    @Test
-//    public void shouldReturn404WhenBuildingViewModelFails() throws Exception {
-//        when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenThrow(TShirtViewModelBuildingException.class);
-//
-//            mockMvc.perform(MockMvcRequestBuilders
-//                    .get("/tshirts/{id}", 1)
-//                    .contentType(MediaType.APPLICATION_JSON))
-//                    .andExpect(status().isNotFound());
-//    }
+    @Test
+    public void shouldReturn404WhenBuildingViewModelFails() throws Exception {
+       when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenThrow(TShirtViewModelBuildingException.class);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                    .get("/tshirts/{id}", 1)
+                   .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
+    }
 
     // fail
-//    @Test
-//    public void shouldReturn404ForInvalidColor() throws Exception {
-//        // Mock the behavior of serviceLayer.findTShirtByColor to return an empty list for any color
-//        when(serviceLayer.findTShirtByColor("Yellow"))
-//                .thenReturn(null);
-//
-//        // Perform the mockMvc request with an invalid color as a path variable
-//        mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/byColor/Yellow", "invalidColor"))
-//                .andExpect(status().isNotFound());
-//    }
+    @Test
+    public void shouldReturn404ForInvalidColor() throws Exception {
+        // Mock the behavior of serviceLayer.findTShirtByColor to return an empty list for any color
+       // when(serviceLayer.findTShirtByColor("Apple"))
+       //        .thenReturn(null);
+        when(serviceLayer.findTShirtByColor(tShirt.getColor())).thenReturn(Collections.emptyList());
+
+        // Perform the mockMvc request with an invalid color as a path variable
+        mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/byColor/{color}",tShirt.getColor()))
+                .andExpect(status().is4xxClientError());
+   }
 }

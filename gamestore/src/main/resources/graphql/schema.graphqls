@@ -6,11 +6,25 @@ type TShirt {
     price: Float!
     quantity: Int!
 }
+type Game{
+    id: ID!
+    title: String!
+    esrb_rating: String!
+    description: String!
+    price: Float!
+    studio: String!
+    quantity: Int!
+}
+
 
 type Query {
     findByColor(color:String!): [TShirt]
     findBySize(size: String!):[TShirt]
     findTShirt(id: Int!): TShirt
+    findGameById(id:ID!): Game
+    findGameByTitle(title:String!): Game
+    findGameByEsrbRating(esrb_rating:String!): Game
+    findGameByStudio(studio:String!):Game
 }
 
 type Mutation {

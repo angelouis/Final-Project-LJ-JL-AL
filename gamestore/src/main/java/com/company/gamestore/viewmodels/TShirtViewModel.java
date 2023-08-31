@@ -1,5 +1,6 @@
 package com.company.gamestore.viewmodels;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -14,25 +15,25 @@ public class TShirtViewModel {
 
     private int tShirtId;
 
+    @Valid
     @NotEmpty(message = "You must provide a size for the t-shirt")
     @NotNull(message = "You must provide a size for the t-shirt")
     @Size(max = 20, message = "Size must not be larger than 20 characters")
     private String size;
-
+    @Valid
     @NotEmpty(message = "You must provide a color")
     @NotNull(message = "You must provide a color for the t-shirt")
     @Size(max = 20, message = "Color must not be larger than 20 characters")
     private String color;
-
+    @Valid
     @NotEmpty(message = "You must provide a description")
     private String description;
-
-    @NotEmpty(message = "You must provide a price")
+    @Valid
+    @NotNull(message = "You must provide a price")
     private BigDecimal price;
-
+    @Valid
     @Min(value = 0, message = "Quantity must be greater than 0")
-
-    @NotEmpty(message = "You must provide a quantity")
+    @NotNull(message = "You must provide a quantity")
     private int quantity;
 
     /**

@@ -1,7 +1,7 @@
-package com.company.gamestore.contollers;
+package com.company.gamestore.controllers;
 
 import com.company.gamestore.models.Game;
-import com.company.gamestore.service.ServiceLayer;
+import com.company.gamestore.services.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -5,8 +5,10 @@ import com.company.gamestore.services.ServiceLayer;
 import com.company.gamestore.viewmodels.TShirtViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +24,8 @@ public class TShirtController {
      */
     @PostMapping("/tshirts")
     @ResponseStatus(HttpStatus.CREATED)
-    public TShirtViewModel addTShirt(@RequestBody TShirtViewModel tShirtViewModel) {
+    public TShirtViewModel addTShirt(@RequestBody @Valid TShirtViewModel tShirtViewModel)
+    {
         return serviceLayer.saveTShirt(tShirtViewModel);
     }
 
@@ -32,7 +35,7 @@ public class TShirtController {
      */
     @PutMapping("/tshirts")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateTShirts(@RequestBody TShirtViewModel tShirt) {
+    public void updateTShirts(@RequestBody @Valid TShirtViewModel tShirt) {
         serviceLayer.updateTShirt(tShirt);
     }
 
