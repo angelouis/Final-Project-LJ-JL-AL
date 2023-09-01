@@ -9,7 +9,7 @@ type TShirt {
 type Game{
     id: ID!
     title: String!
-    esrb_rating: String!
+    esrbRating: String!
     description: String!
     price: Float!
     studio: String!
