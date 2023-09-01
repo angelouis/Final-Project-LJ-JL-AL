@@ -3,6 +3,9 @@ package com.company.gamestore.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -31,16 +34,31 @@ public class Invoice {
     @Column(name="item_id")
     private Integer itemId;
     @Column(name="unit_price")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = "Unit price cant be empty")
+    @Digits(integer=8, fraction=2)
     private BigDecimal unitPrice;
 
     private Integer quantity;
     @Column(name="subtotal")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = "subTotal cant be empty")
+    @Digits(integer=8, fraction=2)
     private BigDecimal subTotal;
     @Column(name="tax")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = "Tax cant be empty")
+    @Digits(integer=8, fraction=2)
     private BigDecimal tax;
     @Column(name="processing_fee")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = "Processing fee cant be empty")
+    @Digits(integer=8, fraction=2)
     private BigDecimal processingFee;
 
+    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = "Total cant be empty")
+    @Digits(integer=8, fraction=2)
     private BigDecimal total;
 
     public Integer getId() {

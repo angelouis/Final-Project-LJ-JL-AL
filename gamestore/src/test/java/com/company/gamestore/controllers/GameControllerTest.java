@@ -1,5 +1,6 @@
 package com.company.gamestore.controllers;
 
+import com.company.gamestore.exceptions.NotFoundException;
 import com.company.gamestore.models.Console;
 import com.company.gamestore.models.Game;
 import com.company.gamestore.repositories.GameRepository;
@@ -12,12 +13,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,7 +37,7 @@ public class GameControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    
+
     @MockBean
     private GameRepository gameRepository;
 
@@ -40,11 +47,11 @@ public class GameControllerTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     private BigDecimal bigDecimal = new BigDecimal("2.22");
-    
+
     private Game game;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         gameRepository.deleteAll();
 
         game = new Game();
@@ -59,7 +66,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void testCreateGameShouldReturn201() throws Exception{
+    public void testCreateGameShouldReturn201() throws Exception {
         String gameJson = mapper.writeValueAsString(game);
 
         Game game1 = new Game();
@@ -78,8 +85,9 @@ public class GameControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
+
     @Test
-    public void testUpdateShouldReturnNoContent() throws Exception{
+    public void testUpdateShouldReturnNoContent() throws Exception {
         String gameJson = mapper.writeValueAsString(game);
 
         serviceLayer.saveGame(game);
@@ -92,8 +100,9 @@ public class GameControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
+
     @Test
-    public void testGetGameByIdShouldReturn200() throws Exception{
+    public void testGetGameByIdShouldReturn200() throws Exception {
 
         when(serviceLayer.findGame(game.getId())).thenReturn(game);
 
@@ -101,37 +110,40 @@ public class GameControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
     @Test
-    public void testGetGameByEsrbRatingShouldReturn200() throws Exception{
+    public void testGetGameByEsrbRatingShouldReturn200() throws Exception {
 
 
         when(serviceLayer.getGameByEsrbRating(game.getEsrbRating())).thenReturn(Optional.ofNullable(game));
 
-        mockMvc.perform(get("/games/esrb/{esrbRating}","E"))
+        mockMvc.perform(get("/games/esrb/{esrbRating}", "E"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
     @Test
-    public void testGetGameByTitleShouldReturn200() throws Exception{
+    public void testGetGameByTitleShouldReturn200() throws Exception {
 
         when(serviceLayer.getGameByTitle(game.getTitle())).thenReturn(Optional.ofNullable(game));
 
-        mockMvc.perform(get("/games/title/{title}","Batman"))
+        mockMvc.perform(get("/games/title/{title}", "Batman"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
     @Test
-    public void testGetGameByStudioShouldReturn200() throws Exception{
+    public void testGetGameByStudioShouldReturn200() throws Exception {
 
         when(serviceLayer.getGameByStudio(game.getStudio())).thenReturn(Optional.ofNullable(game));
 
-        mockMvc.perform(get("/games/studio/{studio}","Warner Bros"))
+        mockMvc.perform(get("/games/studio/{studio}", "Warner Bros"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void testGetAllGamesShouldReturn200() throws Exception{
+    public void testGetAllGamesShouldReturn200() throws Exception {
 
         Game game1 = new Game();
         game1.setQuantity(1);
@@ -152,8 +164,9 @@ public class GameControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
     @Test
-    public void testDeleteGameShouldReturnNoContent() throws Exception{
+    public void testDeleteGameShouldReturnNoContent() throws Exception {
         int id = game.getId();
 
         serviceLayer.saveGame(game);
@@ -165,6 +178,7 @@ public class GameControllerTest {
                 .andExpect(status().isNoContent());
 
     }
+
     @Test
     public void shouldReturn422WhenPostingAnEmptyEsrb() throws Exception {
         Game game1 = new Game();
@@ -181,5 +195,33 @@ public class GameControllerTest {
                 .andDo(print())                         // Print results to console
                 .andExpect(status().isUnprocessableEntity());
     }
-}   
+
+    @Test
+    public void shouldReturn404WhenGameNotFound() throws Exception {
+        when(serviceLayer.findGame(anyInt())).thenThrow(NotFoundException.class);
+        try {
+            mockMvc.perform(MockMvcRequestBuilders
+                    .get("/games/{id}", 1)
+                    .content(mapper.writeValueAsString(game))
+                    .contentType(MediaType.APPLICATION_JSON));
+            fail("Expected NotFoundException to be thrown");
+        } catch (NestedServletException e) {
+            assertThat(e.getCause(), instanceOf(NotFoundException.class));
+        }
+    }
+
+    @Test
+    public void shouldReturn404WhenGameNotFoundByTitle() throws Exception {
+        when(serviceLayer.getGameByTitle(game.getTitle())).thenThrow(NotFoundException.class);
+        try {
+            mockMvc.perform(MockMvcRequestBuilders
+                    .get("/games/title/{title}", game.getTitle())
+                    .content(mapper.writeValueAsString(game))
+                    .contentType(MediaType.APPLICATION_JSON));
+            fail("Expected NotFoundException to be thrown");
+        } catch (NestedServletException e) {
+            assertThat(e.getCause(), instanceOf(NotFoundException.class));
+        }
+    }
+}
 

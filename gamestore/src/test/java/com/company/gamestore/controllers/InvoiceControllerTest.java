@@ -1,5 +1,6 @@
 package com.company.gamestore.controllers;
 
+import com.company.gamestore.exceptions.NotFoundException;
 import com.company.gamestore.models.Game;
 import com.company.gamestore.models.Invoice;
 import com.company.gamestore.repositories.GameRepository;
@@ -16,12 +17,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,6 +81,7 @@ public class InvoiceControllerTest {
         invoiceViewModel.setCity("Austin");
         invoiceViewModel.setZipCode("56723");
         invoiceViewModel.setItemType("game");
+        invoiceViewModel.setState("CA");
         invoiceViewModel.setItemId(24);
         invoiceViewModel.setQuantity(3);
         invoiceViewModel.setId(1);
@@ -82,16 +89,8 @@ public class InvoiceControllerTest {
     @Test
     public void testCreateInvoiceShouldReturn201() throws Exception{
         String gameJson = mapper.writeValueAsString(invoiceViewModel);
-
-        InvoiceViewModel invoiceViewModel1 = new InvoiceViewModel();
-        invoiceViewModel1.setName(invoiceViewModel.getName());
-        invoiceViewModel1.setStreet(invoiceViewModel.getStreet());
-        invoiceViewModel1.setCity(invoiceViewModel.getCity());
-        invoiceViewModel1.setZipCode(invoiceViewModel.getZipCode());
-        invoiceViewModel1.setItemType(invoiceViewModel.getItemType());
-        invoiceViewModel1.setItemId(invoiceViewModel.getItemId());
-        invoiceViewModel1.setQuantity(3);
-        when(serviceLayer.saveInvoice(invoiceViewModel)).thenReturn(invoiceViewModel1);
+        when(serviceLayer.saveInvoice(any(InvoiceViewModel.class))).thenReturn(invoiceViewModel);
+        
 
         mockMvc.perform(post("/invoice")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,16 +142,29 @@ public class InvoiceControllerTest {
     }
 
     @Test
-    public void shouldReturn422WhenAddingTShirtFails() throws Exception {
+    public void shouldReturn422WhenAddingInvoiceFails() throws Exception {
         InvoiceViewModel invoiceViewModel1 = new InvoiceViewModel();
 
-        invoiceViewModel1.setName(null);
-        when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenReturn(null);
+        invoiceViewModel1.setQuantity(null);
+        when(serviceLayer.saveInvoice(any(InvoiceViewModel.class))).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/invoice")
-                        .content(mapper.writeValueAsString(invoiceViewModel))
+                        .content(mapper.writeValueAsString(invoiceViewModel1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity());
+    }
+    @Test
+    public void shouldReturn404WhenGameNotFoundByName() throws Exception {
+        when(serviceLayer.getInvoiceByCustomerName(invoiceViewModel.getName())).thenThrow(NotFoundException.class);
+        try {
+            mockMvc.perform(MockMvcRequestBuilders
+                    .get("/invoice/name/{name}", invoiceViewModel.getName())
+                    .content(mapper.writeValueAsString(game))
+                    .contentType(MediaType.APPLICATION_JSON));
+            fail("Expected NotFoundException to be thrown");
+        } catch (NestedServletException e) {
+            assertThat(e.getCause(), instanceOf(NotFoundException.class));
+        }
     }
 }

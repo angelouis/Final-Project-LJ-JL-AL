@@ -36,9 +36,6 @@ class ConsoleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-//    @MockBean
-//    private ConsoleRepository consoleRepository;
-
     @MockBean
     private ServiceLayer serviceLayer;
 

@@ -37,7 +37,6 @@ public class InvoiceViewModel {
     private Integer itemId;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @NotNull(message = "Unit price cant be empty")
     @Digits(integer=8, fraction=2)
     private BigDecimal unitPrice;
 
@@ -45,22 +44,18 @@ public class InvoiceViewModel {
     private Integer quantity;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @NotNull(message = "subTotal cant be empty")
     @Digits(integer=8, fraction=2)
     private BigDecimal subTotal;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @NotNull(message = "Tax cant be empty")
     @Digits(integer=8, fraction=2)
     private BigDecimal tax;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @NotNull(message = "Processing fee cant be empty")
     @Digits(integer=8, fraction=2)
     private BigDecimal processingFee;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @NotNull(message = "Total cant be empty")
     @Digits(integer=8, fraction=2)
     private BigDecimal total;
 

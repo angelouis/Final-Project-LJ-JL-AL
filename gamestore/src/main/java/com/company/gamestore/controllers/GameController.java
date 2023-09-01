@@ -47,7 +47,7 @@ public class GameController implements Serializable {
     }
     
     @GetMapping("/games/studio/{studio}")
-    public Optional<Game> findByStudio(@PathVariable String studio){
+    public Optional<Game> findByStudio(@PathVariable @Valid String studio){
 
         return serviceLayer.getGameByStudio(studio);
     }

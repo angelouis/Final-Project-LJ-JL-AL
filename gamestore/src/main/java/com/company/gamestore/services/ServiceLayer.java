@@ -164,12 +164,9 @@ public class ServiceLayer {
         invoice.setStreet(invoiceViewModel.getStreet());
         invoice.setState(invoiceViewModel.getState());
         invoice = invoiceRepository.save(invoice);
-       // Optional <Invoice> test = invoiceRepository.findByName(invoiceViewModel.getName());
-
 
         invoiceViewModel = buildInvoiceViewModel(invoice);
 
-        //invoiceViewModel.setId(invoice.getId());
 
 
         return invoiceViewModel;
