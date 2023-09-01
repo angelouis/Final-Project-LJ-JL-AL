@@ -44,7 +44,7 @@ public class GameRepositoryTest {
         game = gameRepository.save(game);
 
         List<Game> gameList = gameRepository.findAll();
-        assertEquals(gameList.size(),1);
+        assertEquals(gameList.size(),1); // asserts that the returned list is the correct amount of all the games in the repo
     }
     @Test
     public void shouldCreateGame(){
@@ -58,11 +58,11 @@ public class GameRepositoryTest {
         game.setTitle("Batman");
         game.setDescription("The newest in the batman series relive your roots as batman");
 
-        assertEquals(gameRepository.findAll().size(),0);
+        assertEquals(gameRepository.findAll().size(),0); //  makes sures that the game is created by knowing the before
         game = gameRepository.save(game);
 
         Optional<Game> game1 = gameRepository.findById(game.getId());
-        assertEquals(gameRepository.findAll().size(),1);
+        assertEquals(gameRepository.findAll().size(),1); //  makes sures that the game is created by knowing the after the creation of the game
     }
     @Test
     public void shouldUpdateGame(){
@@ -81,7 +81,7 @@ public class GameRepositoryTest {
         game = gameRepository.save(game);
 
         Optional<Game> game1 = gameRepository.findById(game.getId());
-        assertEquals(game1.get(), game);
+        assertEquals(game1.get(), game); // compares the updated information with the one it gets from the id
     }
     @Test
     public void shouldDeleteGame(){
@@ -99,7 +99,7 @@ public class GameRepositoryTest {
         gameRepository.deleteById(game.getId());
 
         Optional<Game> game1 = gameRepository.findById(game.getId());
-        assertFalse(game1.isPresent());
+        assertFalse(game1.isPresent()); // makes sures that the deleted game is no longer in the repo with the assertfalse
     }
     @Test
     public void shouldGetGameById(){
@@ -115,7 +115,7 @@ public class GameRepositoryTest {
         game = gameRepository.save(game);
 
         Optional<Game> game1 = gameRepository.findById(game.getId());
-        assertEquals(game1.get(), game);
+        assertEquals(game1.get(), game); // makes sures that the game can be grabbed by id
     }
     @Test
     public void shouldGetGameByEsrbRating(){
@@ -131,7 +131,7 @@ public class GameRepositoryTest {
         game = gameRepository.save(game);
 
         List<Game> game1 = gameRepository.findByEsrbRating(game.getEsrbRating());
-        assertEquals(game1.get(0), game);
+        assertEquals(game1.get(0), game);// makes sures the game can be found by rating
     }
     @Test
     public void shouldGetGameByTitle(){

@@ -14,7 +14,9 @@ import java.util.Objects;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "console")
 public class Console implements Serializable {
-
+    /**
+     * Instance variables for the console model
+     */
     @Id
     @Column(name = "console_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +51,7 @@ public class Console implements Serializable {
         this.quantity = quantity;
     }
 
+    // getters and setters
     public int getId() {
         return id;
     }

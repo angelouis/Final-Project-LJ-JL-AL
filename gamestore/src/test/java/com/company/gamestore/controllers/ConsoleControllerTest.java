@@ -41,6 +41,7 @@ class ConsoleControllerTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
+    // tests whether one can create and add a console
     @Test
     public void shouldCreateConsole() throws Exception {
 
@@ -70,7 +71,6 @@ class ConsoleControllerTest {
                 )
                 .andDo(print())                         // Print results to console
                 .andExpect(status().isCreated()); // ASSERT (status code is 201)
-
     }
 
     @Test
@@ -213,7 +213,7 @@ class ConsoleControllerTest {
                         .content(mapper.writeValueAsString(console))
                 )
                 .andDo(print())                         // Print results to console
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity());   // gives a error status due to not creating a proper model
     }
 
     @Test
@@ -230,7 +230,7 @@ class ConsoleControllerTest {
                         .content(mapper.writeValueAsString(console))
                 )
                 .andDo(print())                         // Print results to console
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity());   // gives a error status due to not creating a proper manufacturer
     }
 
     @Test
@@ -247,7 +247,7 @@ class ConsoleControllerTest {
                         .content(mapper.writeValueAsString(console))
                 )
                 .andDo(print())                         // Print results to console
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity());   // gives a error status due to not creating a proper price
     }
 
     @Test
@@ -265,9 +265,10 @@ class ConsoleControllerTest {
                         .content(mapper.writeValueAsString(console))
                 )
                 .andDo(print())                         // Print results to console
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity());   // gives a error status due to not creating a proper quantity amount
     }
 
+    //Test - provides a console that can't be found thus can't be deleted giving a 404 error
     @Test
     public void shouldReturn404WhenAttemptingToDeleteAConsoleThatDoesNotExist() throws Exception {
         doThrow(NotFoundException.class).when(serviceLayer).removeConsole(anyInt());
@@ -277,12 +278,13 @@ class ConsoleControllerTest {
                     .delete("/consoles/{id}", 1)
 
                     .contentType(MediaType.APPLICATION_JSON));
-            fail("Expected NotFoundException to be thrown");
+            fail("Expected NotFoundException to be thrown"); // provides a failure message
         } catch (NestedServletException e) {
             assertThat(e.getCause(), instanceOf(NotFoundException.class));
         }
     }
 
+    // Test - provides a console id that can't be found giving a 404 error
     @Test
     public void shouldReturn404StatusCodeIfConsoleNotFound() throws Exception {
         doThrow(NotFoundException.class).when(serviceLayer).findConsole(anyInt());
@@ -300,6 +302,7 @@ class ConsoleControllerTest {
 
     }
 
+    // Test - provides a manufacturer that can't be found giving a 404 error
     @Test
     public void shouldReturn404StatusCodeIfManufacturerNotFound() throws Exception {
 
