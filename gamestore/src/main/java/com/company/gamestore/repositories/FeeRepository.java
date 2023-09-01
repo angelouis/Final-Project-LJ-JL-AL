@@ -8,5 +8,10 @@ import java.util.Optional;
 
 @Repository
 public interface FeeRepository extends JpaRepository<Fee, Integer> {
+    /**
+     * finds free by product Type
+     * @param productType
+     * @return the unique fee
+     */
     Optional<Fee> findFeeByProductType(String productType);
 }

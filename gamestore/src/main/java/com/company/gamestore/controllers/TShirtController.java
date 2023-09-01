@@ -1,16 +1,13 @@
 package com.company.gamestore.controllers;
 
-import com.company.gamestore.exceptions.NotFoundException;
 import com.company.gamestore.services.ServiceLayer;
 import com.company.gamestore.viewmodels.TShirtViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class TShirtController {

@@ -1,7 +1,6 @@
 package com.company.gamestore.controllers;
 
 import com.company.gamestore.exceptions.NotFoundException;
-import com.company.gamestore.models.Console;
 import com.company.gamestore.models.Game;
 import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.services.ServiceLayer;
@@ -20,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +28,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GameController.class)
@@ -66,6 +63,7 @@ public class GameControllerTest {
 
     }
 
+    // tests whether the game can be created and added to the service layer and privde a 201 status (game does exist)
     @Test
     public void testCreateGameShouldReturn201() throws Exception {
         String gameJson = mapper.writeValueAsString(game);
@@ -84,9 +82,10 @@ public class GameControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gameJson))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated()); // Asserts 201 status
     }
 
+    // tests whether the game can be updated by updating a variable of the game (game does exist)
     @Test
     public void testUpdateShouldReturnNoContent() throws Exception {
         String gameJson = mapper.writeValueAsString(game);
@@ -102,9 +101,9 @@ public class GameControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    // tests whether a game can be found with the id (game does exist)
     @Test
     public void testGetGameByIdShouldReturn200() throws Exception {
-
         when(serviceLayer.findGame(game.getId())).thenReturn(game);
 
         mockMvc.perform(get("/games/{id}", 1))
@@ -114,6 +113,7 @@ public class GameControllerTest {
 
     @Test
     public void testGetGameByEsrbRatingShouldReturn200() throws Exception {
+
 
 
         when(serviceLayer.getGameByEsrbRating(game.getEsrbRating())).thenReturn(Collections.singletonList(game));
@@ -180,6 +180,7 @@ public class GameControllerTest {
 
     }
 
+    // tests whether a game can be created without providing an esrb --> provides a 422 error
     @Test
     public void shouldReturn422WhenPostingAnEmptyEsrb() throws Exception {
         Game game1 = new Game();
@@ -199,13 +200,13 @@ public class GameControllerTest {
 
     @Test
     public void shouldReturn404WhenGameNotFound() throws Exception {
-        when(serviceLayer.findGame(anyInt())).thenThrow(NotFoundException.class);
+        when(serviceLayer.findGame(anyInt())).thenThrow(NotFoundException.class); // gives a not found exception if not found with id
         try {
             mockMvc.perform(MockMvcRequestBuilders
                     .get("/games/{id}", 1)
                     .content(mapper.writeValueAsString(game))
                     .contentType(MediaType.APPLICATION_JSON));
-            fail("Expected NotFoundException to be thrown");
+            fail("Expected NotFoundException to be thrown"); // provides a message for the failure
         } catch (NestedServletException e) {
             assertThat(e.getCause(), instanceOf(NotFoundException.class));
         }
@@ -213,7 +214,7 @@ public class GameControllerTest {
 
     @Test
     public void shouldReturn404WhenGameNotFoundByTitle() throws Exception {
-        when(serviceLayer.getGameByTitle(game.getTitle())).thenThrow(NotFoundException.class);
+        when(serviceLayer.getGameByTitle(game.getTitle())).thenThrow(NotFoundException.class); // gives a not found exception if not found with title
         try {
             mockMvc.perform(MockMvcRequestBuilders
                     .get("/games/title/{title}", game.getTitle())

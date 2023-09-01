@@ -13,7 +13,9 @@ import java.util.Objects;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "invoice")
 public class Invoice {
-
+    /**
+     * Instance variables for the invoice model
+     */
     @Id
     @Column(name = "invoice_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +63,7 @@ public class Invoice {
     @Digits(integer=8, fraction=2)
     private BigDecimal total;
 
+    // getters and setters
     public Integer getId() {
         return id;
     }
