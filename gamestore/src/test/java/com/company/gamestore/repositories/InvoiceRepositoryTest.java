@@ -64,11 +64,11 @@ public class InvoiceRepositoryTest {
         invoice.setProcessingFee(bigDecimal);
         invoice.setTotal(bigDecimal);
 
-        assertEquals(invoiceRepository.findAll().size(),0);
+        assertEquals(invoiceRepository.findAll().size(),0); //  makes sures that the invoice is created by knowing the before
         invoice = invoiceRepository.save(invoice);
 
         Optional<Invoice> invoice1 = invoiceRepository.findById(invoice.getId());
-        assertEquals(invoiceRepository.findAll().size(),1);
+        assertEquals(invoiceRepository.findAll().size(),1);  //  makes sures that the invoice is created by knowing the after the creation of the invoice
     }
 
     @Test
@@ -90,7 +90,7 @@ public class InvoiceRepositoryTest {
        invoice = invoiceRepository.save(invoice);
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
-        assertEquals(invoiceList.size(),1);
+        assertEquals(invoiceList.size(),1); // asserts that the returned list is the correct amount of all the invoice in the repo
     }
 
     @Test
@@ -112,7 +112,7 @@ public class InvoiceRepositoryTest {
         invoice = invoiceRepository.save(invoice);
 
         Optional<Invoice> invoice1 = invoiceRepository.findById(invoice.getId());
-        assertEquals(invoice1.get(), invoice);
+        assertEquals(invoice1.get(), invoice); // makes sures that the invoice can be grabbed by id
     }
     @Test
     public void shouldGetCustomerByName(){
@@ -133,6 +133,6 @@ public class InvoiceRepositoryTest {
         invoice = invoiceRepository.save(invoice);
 
         Optional<Invoice> invoice1 = invoiceRepository.findByName(invoice.getName());
-        assertEquals(invoice1.get(), invoice);
+        assertEquals(invoice1.get(), invoice); // makes sures that the invoice can be grabbed by name
     }
 }

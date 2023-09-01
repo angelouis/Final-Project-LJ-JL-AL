@@ -17,7 +17,7 @@ public class ConsoleController {
     @Autowired
     ServiceLayer serviceLayer;
 
-    // Create
+    // Creates a console
     @PostMapping("/consoles")
     @ResponseStatus(HttpStatus.CREATED)
     public Console addConsole(@RequestBody @Valid Console console) {
@@ -32,7 +32,7 @@ public class ConsoleController {
                 .orElseThrow(() -> new NotFoundException("Requested console was not found! [ id = " + id + "]"));
     }
 
-    //Read (All)
+    //Read (All) - Returns List
     @GetMapping("/consoles")
     public List<Console> getConsoles() {
         return serviceLayer.findAllConsoles();
@@ -46,7 +46,7 @@ public class ConsoleController {
         serviceLayer.updateConsole(console);
     }
 
-    //Delete
+    //Deletes by id
     @DeleteMapping("/consoles/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteConsole(@PathVariable int id) {

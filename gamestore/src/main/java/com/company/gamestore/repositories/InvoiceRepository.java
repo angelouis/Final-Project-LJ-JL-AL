@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
-
     Optional<Invoice> findByName(String name);
 
 }
