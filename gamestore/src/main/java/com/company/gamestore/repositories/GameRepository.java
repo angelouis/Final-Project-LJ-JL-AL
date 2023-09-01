@@ -4,15 +4,16 @@ import com.company.gamestore.models.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Integer> {
 
-    Optional<Game> findByEsrbRating(String esrbRating);
+    List<Game> findByEsrbRating(String esrbRating);
 
-    Optional<Game> findByTitle(String title);
+    List<Game> findByTitle(String title);
 
-    Optional<Game> findByStudio(String studio);
+    List<Game> findByStudio(String studio);
 
 }

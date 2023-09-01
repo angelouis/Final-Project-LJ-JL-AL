@@ -3,7 +3,6 @@ package com.company.gamestore.controllers;
 import com.company.gamestore.models.Console;
 import com.company.gamestore.models.Game;
 import com.company.gamestore.models.TShirt;
-import com.company.gamestore.repositories.ConsoleRepository;
 import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.repositories.TShirtRepository;
 import com.company.gamestore.services.ServiceLayer;
@@ -12,7 +11,6 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -122,7 +120,7 @@ public class GraphController implements Serializable {
 
     //Game
     @QueryMapping
-    public List<Game> findAllGames(@Argument Integer id){
+    public List<Game> findAllGames(){
         return gameRepository.findAll();
     }
 
@@ -136,19 +134,19 @@ public class GraphController implements Serializable {
         }
     }
     @QueryMapping
-    public Optional<Game> getGameByEsrbRating(@PathVariable String esrbRating) {
+    public List<Game> findGameByEsrbRating(@Argument("esrb_rating") String esrbRating) {
 
         return gameRepository.findByEsrbRating(esrbRating);
     }
 
     @QueryMapping
-    public Optional<Game> getGameByTitle(@PathVariable String title) {
+    public List<Game> findGameByTitle(@Argument("title") String title) {
 
         return gameRepository.findByTitle(title);
     }
 
     @QueryMapping
-    public Optional<Game> findByStudio(@PathVariable String studio){
+    public List<Game> findGameByStudio(@Argument("studio") String studio){
 
         return gameRepository.findByStudio(studio);
     }
