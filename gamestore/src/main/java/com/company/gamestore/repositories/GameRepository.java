@@ -8,7 +8,11 @@ import java.util.Optional;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Integer> {
-
+    /**
+     *
+     * @param esrbRating
+     * @return a game with the th
+     */
     Optional<Game> findByEsrbRating(String esrbRating);
 
     Optional<Game> findByTitle(String title);

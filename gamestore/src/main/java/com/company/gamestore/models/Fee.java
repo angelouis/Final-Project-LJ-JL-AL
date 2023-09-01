@@ -10,7 +10,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "fee")
 public class Fee {
-
+    /**
+     * Instance variables for the fee model
+     */
     @Id
     @Column(name = "product_type", length = 50)
     private String productType;
@@ -18,6 +20,7 @@ public class Fee {
     @Column(name = "fee", precision = 8, scale = 2, nullable = false)
     private BigDecimal fee;
 
+    // getters and setters
     public String getProductType() {
         return productType;
     }
