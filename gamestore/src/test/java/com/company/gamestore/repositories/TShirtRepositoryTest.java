@@ -23,8 +23,6 @@ public class TShirtRepositoryTest {
         tShirtRepository.deleteAll();
     }
 
-    // can I make a 404 erro for add t-shirt?
-
     /**
      * Tests whether one can add a t-shirt through the addition of specific inputs that make a t-shirt and finds it in the repo
      */

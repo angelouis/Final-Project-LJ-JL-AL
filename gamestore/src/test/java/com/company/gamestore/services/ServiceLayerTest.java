@@ -303,6 +303,8 @@ public class ServiceLayerTest {
 
     }
     //Tax
+
+    // Beginning of T-Shirt
     private void setUpTShirtRepositoryMock() throws Exception {
         tShirtRepository = mock(TShirtRepository.class);
         TShirt tShirt = new TShirt();
@@ -331,6 +333,9 @@ public class ServiceLayerTest {
         doReturn(tShirtList).when(tShirtRepository).findBySize("Medium");
     }
 
+    /**
+     * Tests whether a t-shirt can be properly saved with all the inputs placed in
+     */
     @Test
     public void shouldSaveTShirt() {
         // Perform the  serviceLayer call
@@ -342,7 +347,6 @@ public class ServiceLayerTest {
         expectedResult.setPrice(new BigDecimal("10.99"));
         expectedResult.setQuantity(12);
 
-//      // expectedResult = tShirtRepository.save(expectedResult);
         TShirtViewModel tShirt1 = new TShirtViewModel();
         tShirt1.setSize("Medium");
         tShirt1.setDescription("Sunshine sun");
@@ -355,6 +359,9 @@ public class ServiceLayerTest {
         assertEquals(expectedResult, tShirt1);
     }
 
+    /**
+     * Tests if one can find a t-shirt by its id in the service layer
+     */
     @Test
     public void shouldFindTShirt() {
         TShirtViewModel expectedResult = new TShirtViewModel();
@@ -369,6 +376,9 @@ public class ServiceLayerTest {
         assertEquals(tShirtViewModel, expectedResult);
     }
 
+    /**
+     * Tests if one can find t-shirt(s) by the color and returns as a list
+     */
     @Test
     public void shouldFindTShirtByColor() {
         TShirtViewModel expectedResult = new TShirtViewModel();
@@ -395,6 +405,9 @@ public class ServiceLayerTest {
         assertEquals(2, tShirtViewModel.size());
     }
 
+    /**
+     * Tests if one can find t-shirt(s) by the size and returns as a list
+     */
     @Test
     public void shouldFindTShirtBySize() {
         TShirtViewModel expectedResult = new TShirtViewModel();
@@ -421,6 +434,9 @@ public class ServiceLayerTest {
         assertEquals(2, tShirtViewModel.size());
     }
 
+    /**
+     * Tests whether all the t-shirts can be returned from the service layer
+     */
     @Test
     public void shouldFindAllTShirts() {
         TShirtViewModel expectedResult = new TShirtViewModel();

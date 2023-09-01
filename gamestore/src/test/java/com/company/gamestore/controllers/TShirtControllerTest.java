@@ -1,8 +1,6 @@
 package com.company.gamestore.controllers;
 
 import com.company.gamestore.exceptions.NotFoundException;
-import com.company.gamestore.exceptions.TShirtUpdateException;
-import com.company.gamestore.exceptions.TShirtViewModelBuildingException;
 import com.company.gamestore.services.ServiceLayer;
 import com.company.gamestore.viewmodels.TShirtViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 
@@ -62,7 +59,11 @@ public class TShirtControllerTest {
                 .andExpect(status().isCreated());
     }
 
-
+    /**
+     * Test - Performs an update on the t-shirt with the put method
+     * Is expected to pass a 200 status
+     * @throws Exception
+     */
     @Test
     public void shouldUpdateTShirt() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
@@ -72,12 +73,22 @@ public class TShirtControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    /**
+     * Test - Performs a delete on a t-shirt (using id) with the delete method
+     * Is expected to pass a 200 status
+     * @throws Exception
+     */
     @Test
     public void shouldDeleteTShirt() throws Exception {
         mockMvc.perform(delete("/tshirts/{id}", 1))
                 .andExpect(status().isNoContent());
     }
 
+    /**
+     * Test - Performs a getting of the t-shirt with the id
+     * Is expected to pass a 200 status
+     * @throws Exception
+     */
     @Test
     public void shouldGetTShirtById() throws Exception {
         when(serviceLayer.findTShirt(1)).thenReturn(tShirt);
@@ -87,6 +98,11 @@ public class TShirtControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test - Expects to get all the t-shirts as a list
+     * Is expected to pass a 200 status
+     * @throws Exception
+     */
     @Test
     public void shouldGetTShirts() throws Exception {
         when(serviceLayer.findAllTShirt()).thenReturn(Collections.singletonList(tShirt));
@@ -95,30 +111,40 @@ public class TShirtControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test - Expects to get all the t-shirts by size (string) in a list
+     * Is expected to pass a 200 status
+     * @throws Exception
+     */
     @Test
     public void shouldGetTShirtsBySize() throws Exception {
-        // Mock the behavior of bookRepository.findByAuthorId
         when(serviceLayer.findTShirtBySize(tShirt.getSize())).thenReturn(Collections.singletonList(tShirt));
 
-        // Perform the mockMvc request with the authorId as a path variable
         mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/bySize/{size}}", tShirt.getSize()))
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test - Expects to get all the t-shirts by a color in as a list
+     * Is expected to pass a 200 status
+     * @throws Exception
+     */
     @Test
     public void shouldGetTShirtsByColor() throws Exception {
-        // Mock the behavior of bookRepository.findByAuthorId
         when(serviceLayer.findTShirtByColor(tShirt.getColor())).thenReturn(Collections.singletonList(tShirt));
 
-        // Perform the mockMvc request with the authorId as a path variable
         mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/byColor/{color}}", tShirt.getColor()))
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Tests - Expects for the t-shirt to fail if a t-shirt is not found to add
+     * 404 Error
+     * @throws Exception
+     */
     @Test
     public void shouldReturn404WhenAddingTShirtFails() throws Exception {
         when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenThrow(NotFoundException.class);
-
 
         try {
             mockMvc.perform(MockMvcRequestBuilders
@@ -131,7 +157,11 @@ public class TShirtControllerTest {
         }
     }
 
-    // doesn't work
+    /**
+     * Tests - Expects for it to fail if the t-shirt variable is set to null like color
+     * Expects a 422
+     * @throws Exception
+     */
     @Test
     public void shouldReturn422WhenAddingTShirtFails() throws Exception {
         TShirtViewModel tShirtViewModel = new TShirtViewModel();
@@ -146,9 +176,11 @@ public class TShirtControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
 
-
-
-
+    /**
+     * Test - Expects to fail if the t-shirt is not found in the repo with the id
+     * Expects a 404
+     * @throws Exception
+     */
     @Test
     public void shouldReturn404WhenTShirtNotFound() throws Exception {
         when(serviceLayer.findTShirt(anyInt())).thenThrow(NotFoundException.class);
@@ -164,18 +196,29 @@ public class TShirtControllerTest {
         }
     }
 
-
+    /**
+     * Test - Expects to fail if given an invalid color such as an empty string
+     * Expects a 422
+     * @throws Exception
+     */
     @Test
     public void shouldReturn422ForInvalidColor() throws Exception {
         when(serviceLayer.findTShirtByColor("")).thenThrow(IllegalArgumentException.class);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/byColor/{color}",""))
                 .andExpect(status().isUnprocessableEntity());
-    }
-    @Test
-    public void shouldReturn422ForInvalidSize() throws Exception {
-        when(serviceLayer.findTShirtBySize("")).thenThrow(IllegalArgumentException.class);
-        mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/bySize/{size}",""))
-                .andExpect(status().isUnprocessableEntity());
-    }
+   }
 
+    /**
+     * Test - Expects to fail if given an invalid size such as an empty string
+     * Expects a 422
+     * @throws Exception
+     */
+   @Test
+   public void shouldReturn422ForInvalidSize() throws Exception {
+       when(serviceLayer.findTShirtBySize("")).thenThrow(IllegalArgumentException.class);
+
+       mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/bySize/{size}",""))
+               .andExpect(status().isUnprocessableEntity());
+   }
 }
