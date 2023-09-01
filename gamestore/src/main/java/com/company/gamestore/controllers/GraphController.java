@@ -1,9 +1,12 @@
 package com.company.gamestore.controllers;
 
+import com.company.gamestore.models.Console;
 import com.company.gamestore.models.Game;
 import com.company.gamestore.models.TShirt;
+import com.company.gamestore.repositories.ConsoleRepository;
 import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.repositories.TShirtRepository;
+import com.company.gamestore.services.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -23,6 +26,9 @@ public class GraphController implements Serializable {
 
     @Autowired
     GameRepository gameRepository;
+
+    @Autowired
+    ServiceLayer service;
 
 
     /**
@@ -145,5 +151,22 @@ public class GraphController implements Serializable {
     public Optional<Game> findByStudio(@PathVariable String studio){
 
         return gameRepository.findByStudio(studio);
+    }
+
+    @QueryMapping
+    public List<Console> consoles(){
+        return service.findAllConsoles();
+    }
+
+    @QueryMapping
+    public Console findConsoleById(@Argument int id){
+        Console returnVal = service.findConsole(id);
+        return returnVal;
+    }
+
+    @QueryMapping
+    public List<Console> findConsoleByManufacturer(@Argument String manufacturer){
+        List<Console> returnVal = service.findConsolesByManufacturer(manufacturer);
+        return returnVal;
     }
 }

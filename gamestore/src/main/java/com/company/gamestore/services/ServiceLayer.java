@@ -9,7 +9,8 @@ import com.company.gamestore.viewmodels.TShirtViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
+//import org.webjars.NotFoundException;
+import com.company.gamestore.exceptions.NotFoundException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -248,7 +249,6 @@ public class ServiceLayer {
 
     public List<Console> findConsolesByManufacturer(String manufacturer) {
 
-        // return consoleRepository.findByManufacturer(manufacturer);
 
         List<Console> console = consoleRepository.findByManufacturer(manufacturer);
 
@@ -269,7 +269,7 @@ public class ServiceLayer {
     public void removeConsole(int id) {
 
         consoleRepository.findById(id)
-                .orElseThrow(() -> new com.company.gamestore.exceptions.NotFoundException());
+                .orElseThrow(() -> new NotFoundException());
 
         consoleRepository.deleteById(id);
 

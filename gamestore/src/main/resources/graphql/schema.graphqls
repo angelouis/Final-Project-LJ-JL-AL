@@ -16,6 +16,16 @@ type Game{
     quantity: Int!
 }
 
+type Console {
+    id:ID!
+    model:String!
+    manufacturer:String!
+    memory_amount: String!
+    processor:String!
+    price: Float!
+    quantity: Int!
+}
+
 
 type Query {
     findByColor(color:String!): [TShirt]
@@ -25,6 +35,9 @@ type Query {
     findGameByTitle(title:String!): Game
     findGameByEsrbRating(esrb_rating:String!): Game
     findGameByStudio(studio:String!):Game
+    consoles: [Console]!
+    findConsoleById(id:ID!): Console
+    findConsoleByManufacturer(manufacturer:String!): [Console]
 }
 
 type Mutation {

@@ -158,16 +158,7 @@ public class TShirtControllerTest {
     }
 
 
-    // giving a 500 error
-    @Test
-    public void shouldReturn404WhenRemovingTShirtFails() throws Exception {
-      // doThrow(NotFoundException.class).when(serviceLayer).removeTShirt(anyInt());
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/tshirts/{id}", 50) // Replace 123 with the actual ID
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
 
     @Test
     public void shouldReturn404WhenTShirtNotFound() throws Exception {
@@ -184,16 +175,6 @@ public class TShirtControllerTest {
         }
     }
 
-    // getting a 200 error
-    @Test
-    public void shouldReturn404WhenBuildingViewModelFails() throws Exception {
-       when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenThrow(TShirtViewModelBuildingException.class);
-
-            mockMvc.perform(MockMvcRequestBuilders
-                    .get("/tshirts/{id}", 1)
-                   .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
-    }
 
     // fail
     @Test

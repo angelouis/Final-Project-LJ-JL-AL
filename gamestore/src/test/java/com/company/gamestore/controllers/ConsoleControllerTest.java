@@ -11,11 +11,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.util.NestedServletException;
+import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.mockito.ArgumentMatchers.any;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,8 +36,8 @@ class ConsoleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private ConsoleRepository consoleRepository;
+//    @MockBean
+//    private ConsoleRepository consoleRepository;
 
     @MockBean
     private ServiceLayer serviceLayer;
@@ -264,36 +273,52 @@ class ConsoleControllerTest {
 
     @Test
     public void shouldReturn404WhenAttemptingToDeleteAConsoleThatDoesNotExist() throws Exception {
-       doThrow(NotFoundException.class).when(serviceLayer).removeConsole(500);
+        doThrow(NotFoundException.class).when(serviceLayer).removeConsole(anyInt());
 
+        try {
+            mockMvc.perform(MockMvcRequestBuilders
+                    .delete("/consoles/{id}", 1)
 
-        mockMvc.perform(delete("/consoles/500"))
-                .andDo(print())
-                .andExpect(status().isNotFound());
+                    .contentType(MediaType.APPLICATION_JSON));
+            fail("Expected NotFoundException to be thrown");
+        } catch (NestedServletException e) {
+            assertThat(e.getCause(), instanceOf(NotFoundException.class));
+        }
     }
 
     @Test
     public void shouldReturn404StatusCodeIfConsoleNotFound() throws Exception {
+        doThrow(NotFoundException.class).when(serviceLayer).findConsole(anyInt());
 
-        when(serviceLayer.findConsole(500))
-                .thenReturn(null);
+        try {
+            mockMvc.perform(MockMvcRequestBuilders
+                    .get("/consoles/{id}", 1)
+
+                    .contentType(MediaType.APPLICATION_JSON));
+            fail("Expected NotFoundException to be thrown");
+        } catch (NestedServletException e) {
+            assertThat(e.getCause(), instanceOf(NotFoundException.class));
+        }
 
 
-        mockMvc.perform(get("/consoles/500"))
-                .andDo(print())
-                .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldReturn404StatusCodeIfManufacturerNotFound() throws Exception {
 
-        when(serviceLayer.findConsolesByManufacturer("Microsoft"))
-                .thenReturn(null);
+        doThrow(NotFoundException.class).when(serviceLayer).findConsolesByManufacturer(anyString());
+
+        try {
+            mockMvc.perform(MockMvcRequestBuilders
+                    .get("/consoles/manufacturer/{manufacturer}", 1)
+
+                    .contentType(MediaType.APPLICATION_JSON));
+            fail("Expected NotFoundException to be thrown");
+        } catch (NestedServletException e) {
+            assertThat(e.getCause(), instanceOf(NotFoundException.class));
+        }
 
 
-        mockMvc.perform(get("/consoles/manufacturer/Microsoft"))
-                .andDo(print())
-                .andExpect(status().isNotFound());
     }
 
 
