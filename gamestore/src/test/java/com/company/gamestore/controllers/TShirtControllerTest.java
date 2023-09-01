@@ -62,8 +62,7 @@ public class TShirtControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    // COMMENT!!!!!
-    // mock right method, url, and expecting the right status code
+
     @Test
     public void shouldUpdateTShirt() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
@@ -119,11 +118,7 @@ public class TShirtControllerTest {
     @Test
     public void shouldReturn404WhenAddingTShirtFails() throws Exception {
         when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenThrow(NotFoundException.class);
-//        mockMvc.perform(MockMvcRequestBuilders
-//                .post("/tshirts")
-//                .content(mapper.writeValueAsString(tShirt))
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotFound());
+
 
         try {
             mockMvc.perform(MockMvcRequestBuilders
@@ -140,13 +135,7 @@ public class TShirtControllerTest {
     @Test
     public void shouldReturn422WhenAddingTShirtFails() throws Exception {
         TShirtViewModel tShirtViewModel = new TShirtViewModel();
-//        tShirtViewModel.setDescription("Hello");
-//        tShirtViewModel.setQuantity(10);
-//        tShirtViewModel.setPrice(new BigDecimal("50.99"));
-//        tShirtViewModel.setColor("Yellow");
-//        tShirtViewModel.setSize(null);
 
-//        serviceLayer.saveTShirt(tShirtViewModel);
         tShirt.setColor(null);
         when(serviceLayer.saveTShirt(any(TShirtViewModel.class))).thenReturn(null);
 
@@ -176,16 +165,17 @@ public class TShirtControllerTest {
     }
 
 
-    // fail
     @Test
-    public void shouldReturn404ForInvalidColor() throws Exception {
-        // Mock the behavior of serviceLayer.findTShirtByColor to return an empty list for any color
-       // when(serviceLayer.findTShirtByColor("Apple"))
-       //        .thenReturn(null);
-        when(serviceLayer.findTShirtByColor(tShirt.getColor())).thenReturn(Collections.emptyList());
-
-        // Perform the mockMvc request with an invalid color as a path variable
-        mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/byColor/{color}",tShirt.getColor()))
+    public void shouldReturn422ForInvalidColor() throws Exception {
+        when(serviceLayer.findTShirtByColor("")).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/byColor/{color}",""))
                 .andExpect(status().isUnprocessableEntity());
-   }
+    }
+    @Test
+    public void shouldReturn422ForInvalidSize() throws Exception {
+        when(serviceLayer.findTShirtBySize("")).thenThrow(IllegalArgumentException.class);
+        mockMvc.perform(MockMvcRequestBuilders.get("/tshirts/bySize/{size}",""))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
 }
