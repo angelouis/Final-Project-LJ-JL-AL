@@ -35,19 +35,19 @@ public class GameController implements Serializable {
     }
 
     @GetMapping("/games/esrb/{esrbRating}")
-    public Optional<Game> getGameByEsrbRating(@PathVariable String esrbRating) {
+    public List<Game> getGameByEsrbRating(@PathVariable String esrbRating) {
 
         return serviceLayer.getGameByEsrbRating(esrbRating);
     }
     
     @GetMapping("/games/title/{title}")
-    public Optional<Game> getGameByTitle(@PathVariable String title) {
+    public List<Game> getGameByTitle(@PathVariable String title) {
 
         return serviceLayer.getGameByTitle(title);
     }
     
     @GetMapping("/games/studio/{studio}")
-    public Optional<Game> findByStudio(@PathVariable @Valid String studio){
+    public List<Game> findByStudio(@PathVariable @Valid String studio){
 
         return serviceLayer.getGameByStudio(studio);
     }

@@ -487,17 +487,17 @@ public class ServiceLayer {
         gameRepository.deleteById(id);
     }
 
-    public Optional<Game> getGameByEsrbRating(String esrbRating) {
+    public List<Game> getGameByEsrbRating(String esrbRating) {
 
         return gameRepository.findByEsrbRating(esrbRating);
     }
 
-    public Optional<Game> getGameByTitle(String title) {
+    public List<Game> getGameByTitle(String title) {
 
         return gameRepository.findByTitle(title);
     }
 
-    public Optional<Game> getGameByStudio(String studio){
+    public List<Game> getGameByStudio(String studio){
 
         return gameRepository.findByStudio(studio);
     }

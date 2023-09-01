@@ -32,9 +32,10 @@ type Query {
     findBySize(size: String!):[TShirt]
     findTShirt(id: Int!): TShirt
     findGameById(id:ID!): Game
-    findGameByTitle(title:String!): Game
-    findGameByEsrbRating(esrb_rating:String!): Game
-    findGameByStudio(studio:String!):Game
+    findGameByTitle(title:String!): [Game]
+    findAllGames: [Game]!
+    findGameByEsrbRating(esrb_rating:String!): [Game]
+    findGameByStudio(studio:String!):[Game]
     consoles: [Console]!
     findConsoleById(id:ID!): Console
     findConsoleByManufacturer(manufacturer:String!): [Console]

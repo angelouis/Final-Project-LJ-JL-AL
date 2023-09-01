@@ -260,10 +260,10 @@ public class ServiceLayerTest {
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
 
-        Optional<Game> game =  serviceLayer.getGameByStudio(game1.getStudio());
+        List<Game> game =  serviceLayer.getGameByStudio(game1.getStudio());
 
 
-        assertEquals(game1,game.get());
+        assertEquals(game1,game.get(0));
 
     }
     @Test
@@ -278,10 +278,10 @@ public class ServiceLayerTest {
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
 
-        Optional<Game> game =  serviceLayer.getGameByEsrbRating(game1.getEsrbRating());
+       List<Game> game =  serviceLayer.getGameByEsrbRating(game1.getEsrbRating());
 
 
-        assertEquals(game1,game.get());
+        assertEquals(game1,game.get(0));
 
     }
     @Test
@@ -296,10 +296,10 @@ public class ServiceLayerTest {
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
 
-        Optional<Game> game =  serviceLayer.getGameByTitle(game1.getTitle());
+        List<Game> game =  serviceLayer.getGameByTitle(game1.getTitle());
 
 
-        assertEquals(game1,game.get());
+        assertEquals(game1,game.get(0));
 
     }
     //Tax
@@ -679,9 +679,9 @@ public class ServiceLayerTest {
          doReturn(game).when(gameRepository).save(game2);
          doReturn(gameList).when(gameRepository).findAll();
          doReturn(Optional.of(game)).when(gameRepository).findById(1);
-         doReturn(Optional.of(game)).when(gameRepository).findByStudio(game2.getStudio());
-         doReturn(Optional.of(game)).when(gameRepository).findByTitle(game2.getTitle());
-         doReturn(Optional.of(game)).when(gameRepository).findByEsrbRating(game2.getEsrbRating());
+         doReturn(gameList).when(gameRepository).findByStudio(game2.getStudio());
+         doReturn(gameList).when(gameRepository).findByTitle(game2.getTitle());
+         doReturn(gameList).when(gameRepository).findByEsrbRating(game2.getEsrbRating());
     }
     private void setUpTaxRepositoryMock(){
         taxRepository = mock(TaxRepository.class);

@@ -18,6 +18,7 @@ import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,7 +116,7 @@ public class GameControllerTest {
     public void testGetGameByEsrbRatingShouldReturn200() throws Exception {
 
 
-        when(serviceLayer.getGameByEsrbRating(game.getEsrbRating())).thenReturn(Optional.ofNullable(game));
+        when(serviceLayer.getGameByEsrbRating(game.getEsrbRating())).thenReturn(Collections.singletonList(game));
 
         mockMvc.perform(get("/games/esrb/{esrbRating}", "E"))
                 .andDo(print())
@@ -125,7 +126,7 @@ public class GameControllerTest {
     @Test
     public void testGetGameByTitleShouldReturn200() throws Exception {
 
-        when(serviceLayer.getGameByTitle(game.getTitle())).thenReturn(Optional.ofNullable(game));
+        when(serviceLayer.getGameByTitle(game.getTitle())).thenReturn(Collections.singletonList(game));
 
         mockMvc.perform(get("/games/title/{title}", "Batman"))
                 .andDo(print())
@@ -135,7 +136,7 @@ public class GameControllerTest {
     @Test
     public void testGetGameByStudioShouldReturn200() throws Exception {
 
-        when(serviceLayer.getGameByStudio(game.getStudio())).thenReturn(Optional.ofNullable(game));
+        when(serviceLayer.getGameByStudio(game.getStudio())).thenReturn(Collections.singletonList(game));
 
         mockMvc.perform(get("/games/studio/{studio}", "Warner Bros"))
                 .andDo(print())
