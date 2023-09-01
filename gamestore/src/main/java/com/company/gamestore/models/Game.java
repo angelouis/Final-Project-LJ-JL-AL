@@ -24,6 +24,7 @@ public class Game {
     private String title;
     @NotEmpty(message = "Game esrbrating cant be empty")
     @Size(max =50, message = "Game esrbrating cant be over 50 characters")
+    @Column(name = "esrb_Rating")
     private String esrbRating;
     @NotEmpty(message = "Game description cant be empty")
     @Size(max = 255, message = "Game description cant be over 50 characters")
