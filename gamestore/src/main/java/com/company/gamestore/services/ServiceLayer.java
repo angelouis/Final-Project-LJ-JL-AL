@@ -56,16 +56,13 @@ public class ServiceLayer {
         if("game".equalsIgnoreCase(invoiceViewModel.getItemType())){
             invoice.setItemType(invoiceViewModel.getItemType());
             game = findGame(invoiceViewModel.getItemId());
-            // checks item by id
              if(invoiceViewModel.getItemId().equals(game.getId())){
                  invoice.setItemId(invoiceViewModel.getItemId());
-                 // checks if the quantity of the game is more than 0
                  if(game.getQuantity() > 0){
                      if(game.getQuantity() - invoiceViewModel.getQuantity() > 0){
                          game.setQuantity(game.getQuantity() - invoiceViewModel.getQuantity());
                          saveGame(game);
                          invoice.setQuantity(invoiceViewModel.getQuantity());
-                         // multiples the quantity with the price
                          subtotal = game.getPrice().multiply(new BigDecimal(invoiceViewModel.getQuantity()));
                          invoice.setUnitPrice(game.getPrice());
                          invoiceViewModel.setUnitPrice(game.getPrice());
@@ -85,13 +82,11 @@ public class ServiceLayer {
             Console console = findConsole(invoiceViewModel.getItemId());
             if(invoiceViewModel.getItemId().equals(console.getId())){
                 invoice.setItemId(invoiceViewModel.getItemId());
-                // checks if the quantity is greater than 0
                 if(console.getQuantity() > 0){
                     if(console.getQuantity() - invoiceViewModel.getQuantity() > 0){
                         console.setQuantity(console.getQuantity() - invoiceViewModel.getQuantity());
                         saveConsole(console);
                         invoice.setQuantity(invoiceViewModel.getQuantity());
-                        // multiples the quantity with the price
                         subtotal = console.getPrice().multiply(new BigDecimal(invoiceViewModel.getQuantity()));
                         invoice.setUnitPrice(console.getPrice());
                         invoiceViewModel.setUnitPrice(console.getPrice());
@@ -110,13 +105,11 @@ public class ServiceLayer {
             TShirtViewModel tShirt = findTShirt(invoiceViewModel.getItemId());
             if(invoiceViewModel.getItemId().equals(tShirt.gettShirtId())){
                 invoice.setItemId(invoiceViewModel.getItemId());
-                // checks if the quantity is greater than 0
                 if(tShirt.getQuantity() > 0){
                     if(tShirt.getQuantity() - invoiceViewModel.getQuantity() > 0){
                         tShirt.setQuantity(tShirt.getQuantity() - invoiceViewModel.getQuantity());
                         saveTShirt(tShirt);
                         invoice.setQuantity(invoiceViewModel.getQuantity());
-                        // multiples the quantity with the price
                         subtotal = tShirt.getPrice().multiply(new BigDecimal(invoiceViewModel.getQuantity()));
                         invoice.setUnitPrice(tShirt.getPrice());
                         invoiceViewModel.setUnitPrice(tShirt.getPrice());
@@ -138,29 +131,24 @@ public class ServiceLayer {
         invoice.setSubTotal(subtotal);
         invoiceViewModel.setSubTotal(subtotal);
 
-        // subtotal gets multiplied by the tax that is based on the state's rate
         taxTotal = subtotal.multiply(getTaxByState(invoiceViewModel.getState()).get().getRate());
 
-        // round halfup to set the scale (e.g. two decimal points)
+
         taxTotal = taxTotal.setScale(2, RoundingMode.HALF_UP);
         invoice.setTax(taxTotal);
         invoiceViewModel.setTax(taxTotal);
 
         feeTotal = getFeeByItemType(invoice.getItemType()).get().getFee();
 
-        // adds additional fee depending on the item type for quantities higher than 10
         if(invoice.getQuantity() > 10){
             feeTotal = feeTotal.add(additionalProcessing);
         }
-        // round halfup to set the scale (e.g. two decimal points)
         feeTotal = feeTotal.setScale(2, RoundingMode.HALF_UP);
 
         invoice.setProcessingFee(feeTotal);
         invoiceViewModel.setProcessingFee(feeTotal);
 
-        // gets the tax and processing fee to the total amount
         totalAmount = invoice.getTax().add(invoice.getProcessingFee().add(invoice.getSubTotal()));
-        // round halfup to set the scale (e.g. two decimal points)
         totalAmount = totalAmount.setScale(2, RoundingMode.HALF_UP);
 
         if (totalAmount.compareTo(maxTotal) > 0) {
@@ -204,11 +192,6 @@ public class ServiceLayer {
         return invoiceViewModel;
     }
 
-    /**
-     * finds the invoice by the id
-     * @param id - int id that is unique
-     * @return - Returns the invoiceviewmdoel or else an exception occurs
-     */
     public InvoiceViewModel findInvoice(int id){
         Optional<Invoice> invoice = invoiceRepository.findById(id);
 
@@ -220,10 +203,6 @@ public class ServiceLayer {
         }
     }
 
-    /**
-     * Finds all the invoice in the invoice repository
-      * @return a list of invoice view models
-     */
     public List<InvoiceViewModel> findAllInvoice(){
 
         List<Invoice> invoiceList = invoiceRepository.findAll();
@@ -238,10 +217,17 @@ public class ServiceLayer {
         }
         return invoiceViewModelList;
     }
+    public List<InvoiceViewModel> getInvoiceByCustomerName(String name) {
 
-    public Optional<InvoiceViewModel> getInvoiceByCustomerName(String name) {
+        List<Invoice> invoiceList = invoiceRepository.findByName(name);
+        if (invoiceList == null) {return null;}
+        List<InvoiceViewModel> invoiceViewModelList = new ArrayList<>();
+        for(Invoice invoice:invoiceList){
 
-        return Optional.of(buildInvoiceViewModel(invoiceRepository.findByName(name).get()));
+            InvoiceViewModel  invoiceViewModel = buildInvoiceViewModel(invoice);
+            invoiceViewModelList.add(invoiceViewModel);
+        }
+        return invoiceViewModelList;
     }
     //CONSOLE API
     public Console saveConsole (Console console) {
@@ -285,10 +271,6 @@ public class ServiceLayer {
         consoleRepository.save(console);
     }
 
-    /**
-     * Removes the console by id or else it throws an exception if not found
-     * @param id - int id (unique)
-     */
     public void removeConsole(int id) {
 
         consoleRepository.findById(id)
@@ -298,7 +280,6 @@ public class ServiceLayer {
 
 
     }
-
     //Tshirt API
     /**
      * Saves the t-shirt with the specific instance variables
@@ -389,6 +370,11 @@ public class ServiceLayer {
      */
     @javax.transaction.Transactional
     public void updateTShirt(TShirtViewModel viewModel) {
+
+        //if viewmodel is inside of the repo
+        //do optional tshirt = tshirtrepo.findbyid
+        // save the tshirt
+        // else throw error
         try {
             TShirt tShirt = new TShirt();
             tShirt.settShirtId(viewModel.gettShirtId());
@@ -473,16 +459,12 @@ public class ServiceLayer {
     }
 
     //Game API
+
     public Game saveGame(Game game){
         return gameRepository.save(game);
     }
 
 
-    /**
-     * Gets the game based on the id
-     * @param id - int id (unique)
-     * @return - returns the game or else an exception occurs
-     */
     public Game findGame(int id){
         Optional<Game> game = gameRepository.findById(id);
 
@@ -494,10 +476,6 @@ public class ServiceLayer {
         }
     }
 
-    /**
-     * Finds all the games in the repository
-     * @return - Returns all games in a list or else if null an exception occurs
-     */
     public List<Game> findAllGames(){
         List<Game> gameList =  gameRepository.findAll();
         if(gameList == null){

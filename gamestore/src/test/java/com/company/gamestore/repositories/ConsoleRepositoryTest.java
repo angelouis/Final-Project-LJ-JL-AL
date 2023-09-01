@@ -37,7 +37,7 @@ class ConsoleRepositoryTest {
 
         Optional<Console> console1 = consoleRepo.findById(console.getId());
 
-        assertEquals(console1.get(), console); // compares the created with the one found to make sure they are equal
+        assertEquals(console1.get(), console);
     }
 
     @Test
@@ -54,7 +54,7 @@ class ConsoleRepositoryTest {
 
         Optional<Console> console1 = consoleRepo.findById(console.getId());
 
-        assertTrue(console1.isPresent()); // asserts that the console is present
+        assertTrue(console1.isPresent());
     }
 
     @Test
@@ -85,7 +85,7 @@ class ConsoleRepositoryTest {
         List<Console> consoleList = consoleRepo.findAll();
 
         //Assert...
-        assertEquals(2, consoleList.size()); // asserts that the returned list is the correct size (including all consoles)
+        assertEquals(2, consoleList.size());
     }
 
     @Test
@@ -107,7 +107,8 @@ class ConsoleRepositoryTest {
 
         Optional<Console> console1 = consoleRepo.findById(console.getId());
 
-        assertEquals(console1.get(), console); // asserts that the console got updated with the new information
+        assertEquals(console1.get(), console);
+
     }
 
     @Test
@@ -127,7 +128,7 @@ class ConsoleRepositoryTest {
 
         Optional<Console> console1 = consoleRepo.findById(console.getId());
 
-        assertFalse(console1.isPresent()); // asserts that the console is not present with the assertFalse
+        assertFalse(console1.isPresent());
     }
 
     @Test
@@ -144,7 +145,7 @@ class ConsoleRepositoryTest {
 
         List<Console> consoleList = consoleRepo.findByManufacturer(console.getManufacturer());
 
-        assertEquals(1, consoleList.size()); // asserts how many consoles are in the returned list by manufacturer
+        assertEquals(1, consoleList.size());
     }
 
 }

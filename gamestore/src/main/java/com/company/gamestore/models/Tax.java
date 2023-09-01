@@ -10,9 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tax")
 public class Tax {
-    /**
-     * Instance variables for the tax model
-     */
+
     @Id
     @Column(name = "state", length = 2)
     private String state;
@@ -20,7 +18,6 @@ public class Tax {
     @Column(name = "rate", precision = 8, scale = 2, nullable = false)
     private BigDecimal rate;
 
-    // getters and setters
     public String getState() {
         return state;
     }

@@ -9,12 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Integer> {
-    /**
-     *
-     * @param esrbRating
-     * @return a game with the esrb
-     */
+
     List<Game> findByEsrbRating(String esrbRating);
+
     List<Game> findByTitle(String title);
 
     List<Game> findByStudio(String studio);

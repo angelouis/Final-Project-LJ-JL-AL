@@ -11,9 +11,7 @@ import java.util.Objects;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "game")
 public class Game {
-    /**
-     * Instance variables for the game model
-     */
+
     @Id
     @Column(name = "game_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +38,6 @@ public class Game {
     @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 
-    // getters and setters
     public Integer getId() {
         return id;
     }

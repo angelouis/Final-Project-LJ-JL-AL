@@ -538,9 +538,9 @@ public class ServiceLayerTest {
         invoiceViewModel1.setTax(bigDecimal);
         invoiceViewModel1.setId(1);
 
-        Optional<InvoiceViewModel> invoiceViewModel =  serviceLayer.getInvoiceByCustomerName(invoiceViewModel1.getName());
+        List<InvoiceViewModel> invoiceViewModel =  serviceLayer.getInvoiceByCustomerName(invoiceViewModel1.getName());
 
-        assertEquals(invoiceViewModel1,invoiceViewModel.get());
+        assertEquals(invoiceViewModel1,invoiceViewModel.get(0));
     }
     @Test
     public void shouldFindInvoiceById(){
@@ -650,7 +650,7 @@ public class ServiceLayerTest {
         doReturn(invoice).when(invoiceRepository).save(any(Invoice.class));
         doReturn(invoiceList).when(invoiceRepository).findAll();
         doReturn(Optional.of(invoice)).when(invoiceRepository).findById(1);
-        doReturn(Optional.of(invoice)).when(invoiceRepository).findByName(invoice.getName());
+        doReturn(invoiceList).when(invoiceRepository).findByName(invoice.getName());
     }
      private void setUpGameRepositoryMock(){
         gameRepository = mock(GameRepository.class);

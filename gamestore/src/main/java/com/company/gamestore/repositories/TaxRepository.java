@@ -9,10 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface TaxRepository extends JpaRepository<Tax, Integer> {
-    /**
-     * finds tax by state
-     * @param state - the state is unqiue string
-     * @return the tax
-     */
+
     Optional<Tax> findTaxByState(String state);
 }
