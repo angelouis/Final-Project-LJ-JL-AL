@@ -1,7 +1,6 @@
 package com.company.gamestore.controllers;
 
 import com.company.gamestore.exceptions.NotFoundException;
-import com.company.gamestore.models.Console;
 import com.company.gamestore.models.Game;
 import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.services.ServiceLayer;
@@ -30,7 +29,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GameController.class)

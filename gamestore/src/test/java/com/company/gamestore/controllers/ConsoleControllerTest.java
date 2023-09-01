@@ -2,7 +2,6 @@ package com.company.gamestore.controllers;
 
 import com.company.gamestore.exceptions.NotFoundException;
 import com.company.gamestore.models.Console;
-import com.company.gamestore.repositories.ConsoleRepository;
 import com.company.gamestore.services.ServiceLayer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,17 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
-import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.mockito.ArgumentMatchers.any;
-
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
