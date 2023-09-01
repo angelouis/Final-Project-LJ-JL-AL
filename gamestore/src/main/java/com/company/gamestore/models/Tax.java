@@ -1,16 +1,18 @@
 package com.company.gamestore.models;
 
-import java.math.BigDecimal;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tax")
 public class Tax {
-
+    /**
+     * Instance variables for the tax model
+     */
     @Id
     @Column(name = "state", length = 2)
     private String state;
@@ -18,6 +20,7 @@ public class Tax {
     @Column(name = "rate", precision = 8, scale = 2, nullable = false)
     private BigDecimal rate;
 
+    // getters and setters
     public String getState() {
         return state;
     }

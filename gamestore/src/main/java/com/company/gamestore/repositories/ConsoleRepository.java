@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface ConsoleRepository extends JpaRepository<Console, Integer> {
-
+    /**
+     * finds all the consoles by manufacturer
+     * @param manufacturer - not unique String
+     * @return a list of consoles
+     */
     List<Console> findByManufacturer(String manufacturer);
 }

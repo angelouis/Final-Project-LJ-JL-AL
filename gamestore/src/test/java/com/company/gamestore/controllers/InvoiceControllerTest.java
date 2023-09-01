@@ -7,7 +7,6 @@ import com.company.gamestore.repositories.GameRepository;
 import com.company.gamestore.repositories.InvoiceRepository;
 import com.company.gamestore.services.ServiceLayer;
 import com.company.gamestore.viewmodels.InvoiceViewModel;
-import com.company.gamestore.viewmodels.TShirtViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +63,6 @@ public class InvoiceControllerTest {
         invoiceRepository.deleteAll();
 
         game = new Game();
-        //game.setId(1);
         game.setQuantity(100);
         game.setStudio("Warner Bros");
         game.setEsrbRating("E");
@@ -86,6 +83,8 @@ public class InvoiceControllerTest {
         invoiceViewModel.setQuantity(3);
         invoiceViewModel.setId(1);
     }
+
+    // tests whether an invoice can be created and added to the service layer
     @Test
     public void testCreateInvoiceShouldReturn201() throws Exception{
         String gameJson = mapper.writeValueAsString(invoiceViewModel);
@@ -96,8 +95,9 @@ public class InvoiceControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gameJson))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated()); // 201 status
     }
+
     @Test
     public void testGetInvoiceByIdShouldReturn200() throws Exception{
 
@@ -141,6 +141,8 @@ public class InvoiceControllerTest {
                 .andExpect(status().isOk());
     }
 
+    // tests occurs when the quantity is made to be null
+    // gives 422 error
     @Test
     public void shouldReturn422WhenAddingInvoiceFails() throws Exception {
         InvoiceViewModel invoiceViewModel1 = new InvoiceViewModel();
@@ -156,13 +158,13 @@ public class InvoiceControllerTest {
     }
     @Test
     public void shouldReturn404WhenGameNotFoundByName() throws Exception {
-        when(serviceLayer.getInvoiceByCustomerName(invoiceViewModel.getName())).thenThrow(NotFoundException.class);
+        when(serviceLayer.getInvoiceByCustomerName(invoiceViewModel.getName())).thenThrow(NotFoundException.class); // gives a not found exception if not found with name
         try {
             mockMvc.perform(MockMvcRequestBuilders
                     .get("/invoice/name/{name}", invoiceViewModel.getName())
                     .content(mapper.writeValueAsString(game))
                     .contentType(MediaType.APPLICATION_JSON));
-            fail("Expected NotFoundException to be thrown");
+            fail("Expected NotFoundException to be thrown"); // provides a message for the failure
         } catch (NestedServletException e) {
             assertThat(e.getCause(), instanceOf(NotFoundException.class));
         }

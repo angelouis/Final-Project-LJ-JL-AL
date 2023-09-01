@@ -1,12 +1,13 @@
 package com.company.gamestore.viewmodels;
 
-import javax.persistence.Column;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class InvoiceViewModel {
-
+    /**
+     * Instance variables for the invoice viewmodel
+     */
 
     private Integer id;
 
@@ -59,6 +60,7 @@ public class InvoiceViewModel {
     @Digits(integer=8, fraction=2)
     private BigDecimal total;
 
+    // getters and setters
     public Integer getId() {
         return id;
     }

@@ -44,7 +44,6 @@ public class ServiceLayerTest {
         setUpConsoleRepositoryMock();
 
          serviceLayer = new ServiceLayer(gameRepository,invoiceRepository,taxRepository,feeRepository, tShirtRepository, consoleRepository);
-
     }
     //CONSOLE SERVICE TEST
     @Test
@@ -71,7 +70,6 @@ public class ServiceLayerTest {
         console = consoleRepository.save(console);
 
         assertEquals(expectedResult,console);
-
     }
 
     @Test
@@ -89,8 +87,6 @@ public class ServiceLayerTest {
         Console console = serviceLayer.findConsole(10);
 
         assertEquals(expectedResult, console);
-
-
     }
 
     @Test
@@ -99,8 +95,6 @@ public class ServiceLayerTest {
         Console console = serviceLayer.findConsole(50);
 
         assertEquals(null, console);
-
-
     }
 
     @Test
@@ -121,7 +115,6 @@ public class ServiceLayerTest {
         List<Console> cList = consoleRepository.findAll();
 
         assertEquals(eList, cList);
-
     }
 
     @Test
@@ -142,8 +135,6 @@ public class ServiceLayerTest {
         List<Console> console = serviceLayer.findConsolesByManufacturer("Microsoft");
 
         assertEquals(expectedResult, console);
-
-
     }
 
 
@@ -173,9 +164,6 @@ public class ServiceLayerTest {
         doReturn(Optional.of(console)).when(consoleRepository).findById(10);
         doReturn(cList).when(consoleRepository).findAll();
         doReturn(cList).when(consoleRepository).findByManufacturer("Microsoft");
-
-
-
     }
 
     //GAME SERVICETEST
@@ -201,7 +189,6 @@ public class ServiceLayerTest {
         game2 = gameRepository.save(game2);
 
         assertEquals(game1,game2);
-
     }
     @Test
     public void shouldFindAllGames(){
@@ -228,7 +215,6 @@ public class ServiceLayerTest {
         List<Game> gameList =  serviceLayer.findAllGames();
 
         assertEquals(2, gameList.size());
-
     }
     @Test
     public void shouldFindGameById(){
@@ -245,8 +231,6 @@ public class ServiceLayerTest {
         Game game =  serviceLayer.findGame(game1.getId());
 
         assertEquals(game1, game);
-
-
     }
     @Test
     public void ShouldFindByStudio(){
@@ -260,10 +244,12 @@ public class ServiceLayerTest {
         game1.setDescription("The newest in the batman series relive your roots as batman");
 
 
+
         List<Game> game =  serviceLayer.getGameByStudio(game1.getStudio());
 
 
         assertEquals(game1,game.get(0));
+
 
     }
     @Test
@@ -283,6 +269,7 @@ public class ServiceLayerTest {
 
         assertEquals(game1,game.get(0));
 
+
     }
     @Test
     public void ShouldFindByTitle(){
@@ -298,11 +285,10 @@ public class ServiceLayerTest {
 
         List<Game> game =  serviceLayer.getGameByTitle(game1.getTitle());
 
-
         assertEquals(game1,game.get(0));
 
+
     }
-    //Tax
 
     // Beginning of T-Shirt
     private void setUpTShirtRepositoryMock() throws Exception {
@@ -493,8 +479,6 @@ public class ServiceLayerTest {
         invoiceViewModel1.setUnitPrice(bigDecimal);
         invoiceViewModel1.setId(1);
 
-      //  invoiceViewModel1 = serviceLayer.saveInvoice(invoiceViewModel1);
-
         InvoiceViewModel invoice1 = new InvoiceViewModel();
         invoice1.setName("Carl");
         invoice1.setStreet("2334 Shardoad");
@@ -504,11 +488,6 @@ public class ServiceLayerTest {
         invoice1.setItemId(1);
         invoice1.setQuantity(2);
         invoice1.setState("CA");
-//        invoice1.setSubTotal(bigDecimal);
-//        invoice1.setProcessingFee(bigDecimal);
-//        invoice1.setTotal(bigDecimal);
-//        invoice1.setUnitPrice(bigDecimal);
-//        invoice1.setId(1);
 
         try {
             invoice1 = serviceLayer.saveInvoice(invoice1);
@@ -565,7 +544,6 @@ public class ServiceLayerTest {
         InvoiceViewModel invoice =  serviceLayer.findInvoice(invoice1.getId());
 
         assertEquals(invoice, invoice1);
-
     }
     @Test
     public void shouldFindAllInvoice(){
@@ -606,7 +584,6 @@ public class ServiceLayerTest {
         List<InvoiceViewModel> invoiceList =  serviceLayer.findAllInvoice();
 
         assertEquals(2, invoiceList.size());
-
     }
     private void setUpInvoiceRepositoryMock(){
         invoiceRepository = mock(InvoiceRepository.class);
@@ -646,7 +623,6 @@ public class ServiceLayerTest {
         invoiceList.add(invoice);
         invoiceList.add(invoice1);
 
-       // doReturn(invoice).when(invoiceRepository).save(invoice);
         doReturn(invoice).when(invoiceRepository).save(any(Invoice.class));
         doReturn(invoiceList).when(invoiceRepository).findAll();
         doReturn(Optional.of(invoice)).when(invoiceRepository).findById(1);
